@@ -1,20 +1,49 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+📊 Smart Business Analytics
+Smart Business Analytics is a full-stack web application designed to help businesses efficiently manage daily sales and inventory data while leveraging machine learning to generate actionable insights and growth predictions.
 
-# Run and deploy your AI Studio app
+🚀 Features
 
-This contains everything you need to run your app locally.
+📥 Data Management
+Upload or manually enter daily sales and inventory data (CSV/Excel supported).
 
-View your app in AI Studio: https://ai.studio/apps/7c2f32f5-280e-4b9f-992f-66ee453fed2f
+📊 Interactive Visualizations
+Transform raw data into dynamic charts including:
+Sales trends (line graphs)
+Inventory levels (bar charts)
+Profit distribution (pie charts)
 
-## Run Locally
+🤖 Machine Learning Insights
+Analyze historical data to provide:
+Sales forecasting
+Demand prediction
+Inventory optimization
+Smart business recommendations
 
-**Prerequisites:**  Node.js
+🔐 User Authentication
+Secure login/signup system with personalized dashboards.
 
+💳 Subscription System
+Monthly and yearly plans with payment integration (Stripe/Razorpay), including:
+Feature-based access control
+Billing history
+Subscription management
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+📈 Business Intelligence Dashboard
+Clean, responsive UI for real-time insights and decision-making.
+
+🛠️ Tech Stack
+Frontend: React.js, Tailwind CSS
+Backend: Node.js / Django
+Database: MongoDB / PostgreSQL
+Machine Learning: Python (Pandas, Scikit-learn, TensorFlow)
+Payments: Stripe / Razorpay
+APIs: RESTful architecture
+
+🎯 Purpose
+This project aims to simplify business analytics by combining data visualization and machine learning into one unified platform, enabling businesses to make data-driven decisions and improve operational efficiency.
+
+⚡ Future Enhancements
+AI-powered chatbot for insights
+Real-time notifications & alerts
+Advanced predictive analytics models
+Multi-business account support
