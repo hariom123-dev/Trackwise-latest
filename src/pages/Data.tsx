@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { Database, BrainCircuit, Loader2, TrendingUp, AlertTriangle, CheckCircle2, ArrowRight, BarChart3, PieChart, Activity, Lightbulb, FileText } from 'lucide-react';
+import { Database, BrainCircuit, Loader2, TrendingUp, AlertTriangle, CheckCircle2, ArrowRight, BarChart3, PieChart, Activity, Lightbulb, FileText, UploadCloud } from 'lucide-react';
 import { generateBusinessPredictions, BusinessData, PredictionResult } from '../services/gemini';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
 export default function Data() {
   const [loading, setLoading] = useState(false);
+  const [fileLoading, setFileLoading] = useState(false);
   const [prediction, setPrediction] = useState<PredictionResult | null>(null);
   const [formData, setFormData] = useState<BusinessData>({
     revenue: 50000,
@@ -16,6 +18,58 @@ export default function Data() {
     industry: 'SaaS',
     goals: 'Scale to $100k MRR by end of year'
   });
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setFileLoading(true);
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      try {
+        const bstr = evt.target?.result;
+        const wb = XLSX.read(bstr, { type: 'binary' });
+        const wsname = wb.SheetNames[0];
+        const ws = wb.Sheets[wsname];
+        const data = XLSX.utils.sheet_to_json(ws) as any[];
+
+        if (data.length > 0) {
+          const firstRow = data[0];
+          // Try to map common field names
+          const mappedData: Partial<BusinessData> = {};
+          
+          const findKey = (searchTerms: string[]) => {
+            return Object.keys(firstRow).find(key => 
+              searchTerms.some(term => key.toLowerCase().includes(term.toLowerCase()))
+            );
+          };
+
+          const revenueKey = findKey(['revenue', 'income', 'sales', 'turnover']);
+          const expensesKey = findKey(['expense', 'cost', 'spending', 'outgoings']);
+          const customersKey = findKey(['customer', 'user', 'client', 'subscriber']);
+          const churnKey = findKey(['churn', 'retention', 'attrition']);
+          const industryKey = findKey(['industry', 'sector', 'business type']);
+          const goalsKey = findKey(['goal', 'target', 'objective']);
+
+          if (revenueKey) mappedData.revenue = parseFloat(firstRow[revenueKey]);
+          if (expensesKey) mappedData.expenses = parseFloat(firstRow[expensesKey]);
+          if (customersKey) mappedData.customers = parseInt(firstRow[customersKey]);
+          if (churnKey) mappedData.churnRate = parseFloat(firstRow[churnKey]);
+          if (industryKey) mappedData.industry = String(firstRow[industryKey]);
+          if (goalsKey) mappedData.goals = String(firstRow[goalsKey]);
+
+          setFormData(prev => ({ ...prev, ...mappedData }));
+          alert('Successfully imported data from ' + file.name);
+        }
+      } catch (error) {
+        console.error("File parsing error:", error);
+        alert('Error parsing file. Please ensure it is a valid Excel or CSV file.');
+      } finally {
+        setFileLoading(false);
+      }
+    };
+    reader.readAsBinaryString(file);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,6 +121,21 @@ export default function Data() {
           <p className="font-medium text-slate-500">Input your business metrics for deep-learning analysis.</p>
         </div>
         <div className="flex items-center gap-3">
+          <label className="flex items-center gap-2 px-4 py-2 bg-indigo-900 border border-indigo-900 rounded-xl text-sm font-bold text-white hover:bg-indigo-800 transition-colors cursor-pointer">
+            {fileLoading ? (
+              <Loader2 size={16} className="animate-spin" />
+            ) : (
+              <UploadCloud size={16} />
+            )}
+            Import Sheet
+            <input 
+              type="file" 
+              className="hidden" 
+              accept=".xlsx,.xls,.csv" 
+              onChange={handleFileUpload}
+              disabled={fileLoading}
+            />
+          </label>
           <button 
             onClick={handleExportPDF}
             className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 transition-colors"
@@ -259,7 +328,7 @@ export default function Data() {
                       />
                       <Tooltip 
                         contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
-                        formatter={(value: number) => [`$${value.toLocaleString()}`, 'Revenue']}
+                        formatter={(value) => [`$${(value as number).toLocaleString()}`, 'Revenue']}
                       />
                       <Area 
                         type="monotone" 
