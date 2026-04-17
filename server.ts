@@ -3,6 +3,7 @@ import { createServer as createViteServer } from "vite";
 import path from "path";
 import { fileURLToPath } from "url";
 import Razorpay from "razorpay";
+import { GoogleGenAI, Type } from "@google/genai";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -10,7 +11,18 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Validate required environment variables
+const requiredEnvVars = ["GEMINI_API_KEY", "RAZORPAY_KEY_ID", "RAZORPAY_KEY_SECRET"];
+const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
+
+if (missingEnvVars.length > 0) {
+  console.error(`❌ Missing required environment variables: ${missingEnvVars.join(", ")}`);
+  console.error("Please set all required environment variables before starting the server.");
+  process.exit(1);
+}
+
 let razorpay: Razorpay | null = null;
+let genAI: GoogleGenAI | null = null;
 
 function getRazorpay() {
   if (!razorpay) {
@@ -27,6 +39,17 @@ function getRazorpay() {
   return razorpay;
 }
 
+function getGenAI() {
+  if (!genAI) {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      throw new Error("Gemini API key is not configured");
+    }
+    genAI = new GoogleGenAI({ apiKey });
+  }
+  return genAI;
+}
+
 async function startServer() {
   const app = express();
   const PORT = Number(process.env.PORT) || 3000;
@@ -35,7 +58,82 @@ async function startServer() {
 
   // API Routes
   app.get("/api/health", (req, res) => {
-    res.json({ status: "ok" });
+    res.json({ status: "ok", timestamp: new Date().toISOString() });
+  });
+
+  // Gemini AI Predictions endpoint
+  app.post("/api/gemini/predict", async (req, res) => {
+    try {
+      const { revenue, expenses, customers, churnRate, industry, goals } = req.body;
+
+      // Validate input
+      if (!revenue || !expenses || !customers || churnRate === undefined || !industry || !goals) {
+        return res.status(400).json({ error: "Missing required fields for prediction" });
+      }
+
+      const prompt = `
+        Analyze the following business data and provide strategic predictions and recommendations.
+        
+        Business Data:
+        - Industry: ${industry}
+        - Monthly Revenue: $${revenue}
+        - Monthly Expenses: $${expenses}
+        - Total Customers: ${customers}
+        - Churn Rate: ${churnRate}%
+        - Business Goals: ${goals}
+        
+        Provide a detailed analysis including:
+        1. A summary of current performance.
+        2. A 6-month revenue forecast.
+        3. Strategic recommendations to achieve goals.
+        4. An overall risk level assessment.
+      `;
+
+      const ai = getGenAI();
+      const response = await ai.models.generateContent({
+        model: "gemini-3.1-pro-preview",
+        contents: prompt,
+        config: {
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: Type.OBJECT,
+            properties: {
+              summary: { type: Type.STRING },
+              forecast: {
+                type: Type.ARRAY,
+                items: {
+                  type: Type.OBJECT,
+                  properties: {
+                    month: { type: Type.STRING },
+                    revenue: { type: Type.NUMBER }
+                  },
+                  required: ["month", "revenue"]
+                }
+              },
+              recommendations: {
+                type: Type.ARRAY,
+                items: { type: Type.STRING }
+              },
+              riskLevel: {
+                type: Type.STRING,
+                enum: ["Low", "Medium", "High"]
+              }
+            },
+            required: ["summary", "forecast", "recommendations", "riskLevel"]
+          }
+        }
+      });
+
+      const text = response.text;
+      if (!text) {
+        throw new Error("No response from Gemini API");
+      }
+
+      res.json(JSON.parse(text));
+    } catch (error: any) {
+      console.error("Gemini API Error:", error);
+      res.status(500).json({ error: error.message || "Failed to generate prediction" });
+    }
   });
 
   app.post("/api/razorpay/create-order", async (req, res) => {
@@ -51,7 +149,11 @@ async function startServer() {
       'enterprise-yearly': 22500000, // ₹225,000
     };
 
-    const amount = prices[`${planId}-${interval}`] || 990000;
+    const amount = prices[`${planId}-${interval}`];
+    
+    if (!amount) {
+      return res.status(400).json({ error: "Invalid plan or interval" });
+    }
 
     try {
       const razorpayClient = getRazorpay();
@@ -91,11 +193,12 @@ async function startServer() {
   }
 
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`✅ Server running on http://localhost:${PORT}`);
+    console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
   });
 }
 
 startServer().catch((error) => {
-  console.error("Failed to start server:", error);
+  console.error("❌ Failed to start server:", error);
   process.exit(1);
 });
