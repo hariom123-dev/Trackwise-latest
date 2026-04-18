@@ -193,15 +193,26 @@ async function startServer() {
     
     // Check if dist folder exists, if not, this is an error
     if (!fs.existsSync(distPath)) {
-      console.error("❌ ERROR: 'dist' folder not found. Make sure to run 'npm run build' before starting the server in production.");
+      console.error("❌ ERROR: 'dist' folder not found at", distPath);
+      console.error("Please make sure 'npm run build' completes successfully.");
+      console.error("Current working directory:", __dirname);
       process.exit(1);
     }
     
-    app.use(express.static(distPath));
+    // Serve static files from dist with proper caching headers
+    app.use(express.static(distPath, {
+      maxAge: '1d',
+      etag: false,
+    }));
     
-    // Serve index.html for all non-API routes (SPA routing)
+    // For any non-API, non-static routes, serve index.html (SPA routing)
     app.get("*", (req, res) => {
-      res.sendFile(path.join(distPath, "index.html"));
+      const indexPath = path.join(distPath, "index.html");
+      if (fs.existsSync(indexPath)) {
+        res.sendFile(indexPath);
+      } else {
+        res.status(404).send("index.html not found in dist");
+      }
     });
   }
 
