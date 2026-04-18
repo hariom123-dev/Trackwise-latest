@@ -1,6 +1,7 @@
 import express from "express";
 import { createServer as createViteServer } from "vite";
 import path from "path";
+import fs from "fs";
 import { fileURLToPath } from "url";
 import Razorpay from "razorpay";
 import { GoogleGenAI, Type } from "@google/genai";
@@ -177,7 +178,10 @@ async function startServer() {
   });
 
   // Vite middleware for development
-  if (process.env.NODE_ENV !== "production") {
+  // In production (Render sets NODE_ENV=production), serve from the built dist directory
+  const isProduction = process.env.NODE_ENV === "production" || process.env.ENVIRONMENT === "production";
+  
+  if (!isProduction) {
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
@@ -186,7 +190,16 @@ async function startServer() {
   } else {
     // In production, serve from the built dist directory
     const distPath = path.resolve(__dirname, "dist");
+    
+    // Check if dist folder exists, if not, this is an error
+    if (!fs.existsSync(distPath)) {
+      console.error("❌ ERROR: 'dist' folder not found. Make sure to run 'npm run build' before starting the server in production.");
+      process.exit(1);
+    }
+    
     app.use(express.static(distPath));
+    
+    // Serve index.html for all non-API routes (SPA routing)
     app.get("*", (req, res) => {
       res.sendFile(path.join(distPath, "index.html"));
     });
