@@ -73,21 +73,32 @@ async function startServer() {
       }
 
       const prompt = `
-        Analyze the following business data and provide strategic predictions and recommendations.
+        Analyze this specific business profile and generate a data-driven predictive intelligence report.
         
-        Business Data:
+        CRITICAL: Your response must be directly influenced by the specific values provided. 
+        - If Churn Rate is high (>5%), focus heavily on retention strategies.
+        - If Expenses are close to Revenue, focus on burn rate and runway.
+        - If Revenue is high but churn is also high, identify the "leaky bucket" problem.
+        - If Goals are aggressive, assess the feasibility based on current metrics.
+
+        BUSINESS DATA:
         - Industry: ${industry}
         - Monthly Revenue: $${revenue}
         - Monthly Expenses: $${expenses}
         - Total Customers: ${customers}
         - Churn Rate: ${churnRate}%
+        - Revenue per Customer (ARPU): $${(revenue / (customers || 1)).toFixed(2)}
+        - Operating Margin: ${((revenue - expenses) / (revenue || 1) * 100).toFixed(1)}%
         - Business Goals: ${goals}
         
-        Provide a detailed analysis including:
-        1. A summary of current performance.
-        2. A 6-month revenue forecast.
-        3. Strategic recommendations to achieve goals.
-        4. An overall risk level assessment.
+        YOUR REPORT MUST INCLUDE:
+        1. SUMMARY: A 2-3 sentence expert assessment of their current financial health and market positioning.
+        2. FORECAST: A 6-month projected revenue list. Calculate this logically: 
+           New Revenue = Old Revenue * (1 + GrowthFactor - (ChurnRate/100)). 
+           Assume a reasonable growth factor based on the industry and goals.
+        3. RECOMMENDATIONS: 3-4 highly specific, actionable strategic steps.
+        4. RISK LEVEL: "Low", "Medium", or "High" based on the margin and churn.
+        5. EFFICIENCY SCORE: A number from 0-100 representing operational efficiency.
       `;
 
       const ai = getGenAI();
@@ -95,6 +106,7 @@ async function startServer() {
         model: "gemini-3.1-pro-preview",
         contents: prompt,
         config: {
+          systemInstruction: "You are a world-class Business Intelligence Analyst. Provide precise, data-backed reports in JSON format.",
           responseMimeType: "application/json",
           responseSchema: {
             type: Type.OBJECT,
@@ -118,9 +130,10 @@ async function startServer() {
               riskLevel: {
                 type: Type.STRING,
                 enum: ["Low", "Medium", "High"]
-              }
+              },
+              efficiencyScore: { type: Type.NUMBER }
             },
-            required: ["summary", "forecast", "recommendations", "riskLevel"]
+            required: ["summary", "forecast", "recommendations", "riskLevel", "efficiencyScore"]
           }
         }
       });
