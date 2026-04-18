@@ -19,7 +19,7 @@ Demand prediction
 Inventory optimization
 Smart business recommendations
 
-🔐 User Authentication
+🔐 User Authentication 
 Secure login/signup system with personalized dashboards.
 
 💳 Subscription System
