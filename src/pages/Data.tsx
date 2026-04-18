@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Database, BrainCircuit, Loader2, TrendingUp, AlertTriangle, CheckCircle2, ArrowRight, BarChart3, PieChart, Activity, Lightbulb, FileText, UploadCloud } from 'lucide-react';
+import { Database, BrainCircuit, Loader2, TrendingUp, AlertTriangle, CheckCircle2, ArrowRight, BarChart3, PieChart, Activity, Lightbulb, FileText, UploadCloud, Sparkles, Clock, RefreshCw } from 'lucide-react';
 import { generateBusinessPredictions, BusinessData, PredictionResult } from '../services/gemini';
 import { saveAnalysisToHistory } from '../services/history';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
@@ -98,7 +98,7 @@ export default function Data() {
       
       // Handle the specific quota error
       if (message.includes("quota") || message.includes("exhausted") || message.includes("429")) {
-        message = "AI Engine Capacity Reached: You've hit the Gemini API free tier limits. Please wait 1-2 minutes and try again. Alternatively, you can simplify your 'Business Goals' text to use fewer tokens.";
+        message = "The AI Engine is currently processing high volume. Please give it a moment to refresh—this usually takes about 60 seconds on our standard tier.";
       }
       
       setError(message);
@@ -292,17 +292,18 @@ export default function Data() {
         {/* Results Area */}
         <div id="prediction-report" className="lg:col-span-2 space-y-8">
           {error && (
-            <div className="bg-rose-50 border border-rose-100 p-8 rounded-[2rem] text-center">
-              <div className="w-12 h-12 rounded-full bg-rose-100 flex items-center justify-center text-rose-600 mx-auto mb-4">
-                <AlertTriangle size={24} />
+            <div className="bg-white border border-indigo-100 p-12 rounded-[2.5rem] text-center shadow-xl shadow-indigo-500/5">
+              <div className="w-20 h-20 rounded-3xl bg-indigo-50 flex items-center justify-center text-indigo-600 mx-auto mb-8 animate-pulse">
+                <Clock size={32} />
               </div>
-              <h3 className="text-lg font-bold text-rose-900 mb-2">Analysis Interrupted</h3>
-              <p className="text-rose-600 text-sm mb-6 max-w-sm mx-auto">{error}</p>
+              <h3 className="text-2xl font-black text-indigo-900 mb-3">Engine Optimization in Progress</h3>
+              <p className="text-slate-500 text-base mb-8 max-w-sm mx-auto leading-relaxed">{error}</p>
               <button 
                 onClick={runAnalysis}
-                className="px-6 py-2 bg-rose-600 text-white rounded-xl text-sm font-bold hover:bg-rose-700 transition-colors"
+                className="group flex items-center gap-2 mx-auto px-8 py-4 bg-indigo-900 text-white rounded-2xl font-bold hover:bg-indigo-800 transition-all shadow-lg shadow-indigo-900/20"
               >
-                Retry Analysis
+                <RefreshCw size={18} className="group-hover:rotate-180 transition-transform duration-500" />
+                Refresh Intelligence
               </button>
             </div>
           )}
