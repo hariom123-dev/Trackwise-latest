@@ -13,6 +13,7 @@ export default function Data() {
   const [fileLoading, setFileLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [prediction, setPrediction] = useState<PredictionResult | null>(null);
+  const [lastSubmittedData, setLastSubmittedData] = useState<string>('');
   const [formData, setFormData] = useState<BusinessData>({
     revenue: 50000,
     expenses: 35000,
@@ -86,11 +87,18 @@ export default function Data() {
   };
 
   const runAnalysis = async () => {
+    // Check if data has changed to save quota
+    const currentDataStr = JSON.stringify(formData);
+    if (currentDataStr === lastSubmittedData && prediction && !error) {
+      return; 
+    }
+
     setLoading(true);
     setError(null);
     try {
       const result = await generateBusinessPredictions(formData);
       setPrediction(result);
+      setLastSubmittedData(currentDataStr);
       saveAnalysisToHistory(formData, result);
     } catch (err: any) {
       console.error("Prediction failed:", err);

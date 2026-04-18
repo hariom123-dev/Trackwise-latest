@@ -1,5 +1,5 @@
-// SECURITY: all Gemini calls must go through the backend (/api/gemini/predict)
-// so the API key never ships to the browser.
+// SECURITY: call Gemini from the backend only (/api/gemini/predict)
+// so the API key never ships to the browser bundle.
 
 export interface BusinessData {
   revenue: number;
