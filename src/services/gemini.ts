@@ -1,5 +1,6 @@
 // This file is for TypeScript interfaces only
-// All API calls must go through the backend at /api/gemini/predict
+// SECURITY: All API calls must go through the backend at /api/gemini/predict
+// The API key is kept securely on the server, never exposed to the client
 
 export interface BusinessData {
   revenue: number;

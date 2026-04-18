@@ -11,6 +11,7 @@ import html2canvas from 'html2canvas';
 export default function Data() {
   const [loading, setLoading] = useState(false);
   const [fileLoading, setFileLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [prediction, setPrediction] = useState<PredictionResult | null>(null);
   const [formData, setFormData] = useState<BusinessData>({
     revenue: 50000,
@@ -20,6 +21,17 @@ export default function Data() {
     industry: 'SaaS',
     goals: 'Scale to $100k MRR by end of year'
   });
+
+  const loadSampleData = () => {
+    setFormData({
+      revenue: 125000,
+      expenses: 82000,
+      customers: 4500,
+      churnRate: 1.8,
+      industry: 'Fintech',
+      goals: 'Expand to European market and achieve 25% YoY growth'
+    });
+  };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -76,12 +88,14 @@ export default function Data() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError(null);
     try {
       const result = await generateBusinessPredictions(formData);
       setPrediction(result);
       saveAnalysisToHistory(formData, result);
-    } catch (error) {
-      console.error("Prediction failed:", error);
+    } catch (err: any) {
+      console.error("Prediction failed:", err);
+      setError(err.message || "The AI engine encountered an issue. Please check your connection and try again.");
     } finally {
       setLoading(false);
     }
@@ -91,7 +105,7 @@ export default function Data() {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: name === 'industry' || name === 'goals' ? value : parseFloat(value)
+      [name]: name === 'industry' || name === 'goals' ? value : (value === '' ? 0 : parseFloat(value))
     }));
   };
 
@@ -152,11 +166,20 @@ export default function Data() {
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
         {/* Input Form */}
         <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm h-fit">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="p-2 rounded-lg bg-indigo-50 text-indigo-600">
-              <Database size={20} />
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-indigo-50 text-indigo-600">
+                <Database size={20} />
+              </div>
+              <h2 className="text-xl font-bold text-indigo-900">Business Data Matrix</h2>
             </div>
-            <h2 className="text-xl font-bold text-indigo-900">Business Metrics</h2>
+            <button 
+              type="button"
+              onClick={loadSampleData}
+              className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest hover:text-indigo-700 transition-colors"
+            >
+              Load Sample
+            </button>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -257,13 +280,40 @@ export default function Data() {
 
         {/* Results Area */}
         <div id="prediction-report" className="lg:col-span-2 space-y-8">
-          {!prediction && !loading && (
-            <div className="bg-slate-100/50 border-2 border-dashed border-slate-200 rounded-[2rem] h-full flex flex-col items-center justify-center p-12 text-center">
-              <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center text-slate-300 mb-6">
-                <Activity size={32} />
+          {error && (
+            <div className="bg-rose-50 border border-rose-100 p-8 rounded-[2rem] text-center">
+              <div className="w-12 h-12 rounded-full bg-rose-100 flex items-center justify-center text-rose-600 mx-auto mb-4">
+                <AlertTriangle size={24} />
               </div>
-              <h3 className="text-xl font-bold text-slate-400 mb-2">Awaiting Data Input</h3>
-              <p className="text-slate-400 max-w-xs">Fill out the form to generate your business's predictive intelligence report.</p>
+              <h3 className="text-lg font-bold text-rose-900 mb-2">Analysis Interrupted</h3>
+              <p className="text-rose-600 text-sm mb-6 max-w-sm mx-auto">{error}</p>
+              <button 
+                onClick={handleSubmit}
+                className="px-6 py-2 bg-rose-600 text-white rounded-xl text-sm font-bold hover:bg-rose-700 transition-colors"
+              >
+                Retry Analysis
+              </button>
+            </div>
+          )}
+
+          {!prediction && !loading && !error && (
+            <div className="bg-white border border-slate-100 rounded-[2rem] h-full flex flex-col items-center justify-center p-12 text-center shadow-sm">
+              <div className="w-20 h-20 rounded-3xl bg-indigo-50 flex items-center justify-center text-indigo-600 mb-8 transform rotate-3 shadow-indigo-100/50 shadow-xl">
+                <BrainCircuit size={40} />
+              </div>
+              <h3 className="text-2xl font-black text-indigo-900 mb-3">Intelligence Engine Ready</h3>
+              <p className="text-slate-500 max-w-md mb-8 leading-relaxed">
+                Connect your business metrics to our deep-learning engine. We'll generate a comprehensive 6-month forecast and strategic risk assessment.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 w-full max-w-sm">
+                <button 
+                  onClick={handleSubmit}
+                  className="flex-1 py-4 bg-indigo-900 text-white rounded-2xl font-bold text-sm shadow-xl shadow-indigo-900/10 hover:bg-indigo-800 transition-all"
+                >
+                  Analyze Current Data
+                </button>
+              </div>
+              <p className="mt-6 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Secure Neural Processing Active</p>
             </div>
           )}
 
