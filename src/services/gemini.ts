@@ -1,6 +1,5 @@
-// This file is for TypeScript interfaces only
-// SECURITY: All API calls must go through the backend at /api/gemini/predict
-// The API key is kept securely on the server, never exposed to the client
+// SECURITY: all Gemini calls must go through the backend (/api/gemini/predict)
+// so the API key never ships to the browser.
 
 export interface BusinessData {
   revenue: number;
@@ -22,22 +21,16 @@ export interface PredictionResult {
   efficiencyScore: number;
 }
 
-/**
- * Call the backend API to generate business predictions
- * IMPORTANT: The API key is kept securely on the server, not exposed to the client
- */
 export async function generateBusinessPredictions(data: BusinessData): Promise<PredictionResult> {
   const response = await fetch('/api/gemini/predict', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   });
 
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Failed to generate predictions');
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error?.error || 'Failed to generate predictions');
   }
 
   return response.json();

@@ -85,8 +85,7 @@ export default function Data() {
     reader.readAsBinaryString(file);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const runAnalysis = async () => {
     setLoading(true);
     setError(null);
     try {
@@ -95,10 +94,22 @@ export default function Data() {
       saveAnalysisToHistory(formData, result);
     } catch (err: any) {
       console.error("Prediction failed:", err);
-      setError(err.message || "The AI engine encountered an issue. Please check your connection and try again.");
+      let message = err.message || "The AI engine encountered an issue. Please check your connection and try again.";
+      
+      // Handle the specific quota error
+      if (message.includes("quota") || message.includes("exhausted") || message.includes("429")) {
+        message = "AI Engine Capacity Reached: You've hit the Gemini API free tier limits. Please wait 1-2 minutes and try again. Alternatively, you can simplify your 'Business Goals' text to use fewer tokens.";
+      }
+      
+      setError(message);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await runAnalysis();
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -288,7 +299,7 @@ export default function Data() {
               <h3 className="text-lg font-bold text-rose-900 mb-2">Analysis Interrupted</h3>
               <p className="text-rose-600 text-sm mb-6 max-w-sm mx-auto">{error}</p>
               <button 
-                onClick={handleSubmit}
+                onClick={runAnalysis}
                 className="px-6 py-2 bg-rose-600 text-white rounded-xl text-sm font-bold hover:bg-rose-700 transition-colors"
               >
                 Retry Analysis
@@ -307,7 +318,7 @@ export default function Data() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 w-full max-w-sm">
                 <button 
-                  onClick={handleSubmit}
+                  onClick={runAnalysis}
                   className="flex-1 py-4 bg-indigo-900 text-white rounded-2xl font-bold text-sm shadow-xl shadow-indigo-900/10 hover:bg-indigo-800 transition-all"
                 >
                   Analyze Current Data
@@ -381,7 +392,7 @@ export default function Data() {
                       />
                       <Tooltip 
                         contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
-                        formatter={(value: any) => [`$${Number(value || 0).toLocaleString()}`, 'Revenue']}
+                        formatter={(value: number) => [`$${value.toLocaleString()}`, 'Revenue']}
                       />
                       <Area 
                         type="monotone" 
