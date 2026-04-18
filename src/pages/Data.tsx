@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Database, BrainCircuit, Loader2, TrendingUp, AlertTriangle, CheckCircle2, ArrowRight, BarChart3, PieChart, Activity, Lightbulb, FileText, UploadCloud } from 'lucide-react';
 import { generateBusinessPredictions, BusinessData, PredictionResult } from '../services/gemini';
+import { saveAnalysisToHistory } from '../services/history';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
@@ -77,6 +78,7 @@ export default function Data() {
     try {
       const result = await generateBusinessPredictions(formData);
       setPrediction(result);
+      saveAnalysisToHistory(formData, result);
     } catch (error) {
       console.error("Prediction failed:", error);
     } finally {
@@ -328,7 +330,7 @@ export default function Data() {
                       />
                       <Tooltip 
                         contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
-                        formatter={(value) => [`$${(value as number).toLocaleString()}`, 'Revenue']}
+                        formatter={(value: any) => [`$${Number(value || 0).toLocaleString()}`, 'Revenue']}
                       />
                       <Area 
                         type="monotone" 
