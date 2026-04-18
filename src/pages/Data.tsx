@@ -3,6 +3,7 @@ import { Database, BrainCircuit, Loader2, TrendingUp, AlertTriangle, CheckCircle
 import { generateBusinessPredictions, BusinessData, PredictionResult } from '../services/gemini';
 import { saveAnalysisToHistory } from '../services/history';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import { motion } from 'motion/react';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -382,27 +383,32 @@ export default function Data() {
                             fill="transparent"
                             className="text-slate-100"
                           />
-                          <circle
+                          <motion.circle
+                            initial={{ strokeDashoffset: 364 }}
+                            animate={{ strokeDashoffset: 364 - (364 * prediction.efficiencyScore) / 100 }}
+                            transition={{ duration: 1.5, ease: "easeOut" }}
                             cx="64"
                             cy="64"
                             r="58"
                             stroke="currentColor"
                             strokeWidth="8"
                             strokeDasharray={364}
-                            strokeDashoffset={364 - (364 * 78) / 100}
                             strokeLinecap="round"
                             fill="transparent"
                             className="text-indigo-600"
                           />
                         </svg>
                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
-                          <span className="text-3xl font-black text-indigo-900">78%</span>
+                          <span className="text-3xl font-black text-indigo-900">{prediction.efficiencyScore}%</span>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <p className="text-sm text-slate-500 font-medium text-center mt-4">
-                    Your business is performing in the top 22% of the {formData.industry} industry.
+                  <p className="text-sm text-slate-500 font-medium text-center mt-4 uppercase tracking-tighter">
+                    {prediction.efficiencyScore > 80 ? 'Exceptional Performance' : prediction.efficiencyScore > 50 ? 'Stable Performance' : 'Optimizing Required'}
+                  </p>
+                  <p className="text-[10px] text-slate-400 font-bold text-center mt-1">
+                    Based on industry benchmarks for {formData.industry}
                   </p>
                 </div>
               </div>
