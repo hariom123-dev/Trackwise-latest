@@ -17,7 +17,14 @@ import {
   CheckCircle2,
   BrainCircuit,
   Lightbulb,
-  Check
+  Check,
+  Share2,
+  Mail,
+  MessageCircle,
+  Hash,
+  Copy,
+  ExternalLink,
+  ShieldCheck
 } from 'lucide-react';
 import { 
   format, 
@@ -40,22 +47,30 @@ import { getAnalysisHistory, AnalysisHistory } from '../services/history';
 
 type TimeRange = '7d' | '30d' | '90d' | '12m';
 
+interface ShareSource {
+  name: string;
+  icon: React.ElementType;
+  color: string;
+  action: () => void;
+}
+
 export default function Dashboard() {
   const dashboardRef = useRef<HTMLDivElement>(null);
   const [history, setHistory] = useState<AnalysisHistory[]>([]);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [timeRange, setTimeRange] = useState<TimeRange>('30d');
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedAnalysis, setSelectedAnalysis] = useState<AnalysisHistory | null>(null);
+  const [copySuccess, setCopySuccess] = useState(false);
 
   useEffect(() => {
     setHistory(getAnalysisHistory());
   }, []);
 
   const getStats = () => {
-    // Generate modified stats based on timeRange
     const multiplier = timeRange === '7d' ? 0.8 : timeRange === '90d' ? 1.4 : timeRange === '12m' ? 3.2 : 1.0;
     
     return [
@@ -66,17 +81,14 @@ export default function Dashboard() {
     ];
   };
 
-  const handleExport = async () => {
-    if (!dashboardRef.current) return;
-    setIsExporting(true);
-    
+  const generatePDFBlob = async (): Promise<Blob | null> => {
+    if (!dashboardRef.current) return null;
     try {
       const canvas = await html2canvas(dashboardRef.current, {
         scale: 2,
         useCORS: true,
         logging: false,
         backgroundColor: '#f6fafe',
-        // Exclude UI elements that shouldn't be in the PDF
         ignoreElements: (el) => el.classList.contains('no-export')
       });
       
@@ -87,12 +99,78 @@ export default function Dashboard() {
       const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
       
       pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`TrackWise-Dashboard-Export-${format(new Date(), 'yyyy-MM-dd')}.pdf`);
+      return pdf.output('blob');
     } catch (error) {
-      console.error('Export failed:', error);
-    } finally {
-      setIsExporting(false);
+      console.error('PDF generation failed:', error);
+      return null;
     }
+  };
+
+  const handleDownload = async () => {
+    setIsExporting(true);
+    const blob = await generatePDFBlob();
+    if (blob) {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `TrackWise-Report-${format(new Date(), 'yyyy-MM-dd')}.pdf`;
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+    setIsExporting(false);
+    setIsShareModalOpen(false);
+  };
+
+  const handleNativeShare = async () => {
+    const blob = await generatePDFBlob();
+    if (blob && navigator.share) {
+      try {
+        const file = new File([blob], `TrackWise-Report-${format(new Date(), 'yyyy-MM-dd')}.pdf`, { type: 'application/pdf' });
+        await navigator.share({
+          files: [file],
+          title: 'TrackWise Business Report',
+          text: 'Check out our latest business intelligence report from TrackWise.',
+        });
+      } catch (error) {
+        console.error('Sharing failed:', error);
+      }
+    } else {
+      alert('Native sharing is not supported in this browser.');
+    }
+  };
+
+  const shareSources: ShareSource[] = [
+    {
+      name: 'WhatsApp',
+      icon: MessageCircle,
+      color: 'bg-[#25D366] text-white',
+      action: () => window.open(`https://wa.me/?text=${encodeURIComponent('Check out the latest TrackWise Business Report!')}`, '_blank')
+    },
+    {
+      name: 'Email',
+      icon: Mail,
+      color: 'bg-rose-500 text-white',
+      action: () => window.location.href = `mailto:?subject=TrackWise Business Report&body=I wanted to share our latest business intelligence report from TrackWise.`
+    },
+    {
+      name: 'Slack',
+      icon: Hash,
+      color: 'bg-[#4A154B] text-white',
+      action: () => window.open('https://slack.com/share', '_blank')
+    },
+    {
+      name: 'Native Share',
+      icon: Share2,
+      color: 'bg-indigo-600 text-white',
+      action: handleNativeShare
+    }
+  ];
+
+  const handleCopyLink = () => {
+    const fakeLink = `https://trackwise.app/reports/${crypto.randomUUID()}`;
+    navigator.clipboard.writeText(fakeLink);
+    setCopySuccess(true);
+    setTimeout(() => setCopySuccess(false), 2000);
   };
 
   const stats = getStats();
@@ -265,12 +343,11 @@ export default function Dashboard() {
           </div>
 
           <button 
-            onClick={handleExport}
-            disabled={isExporting}
-            className="flex items-center gap-2 px-4 py-2 bg-indigo-900 text-white rounded-xl text-sm font-bold hover:bg-indigo-800 transition-colors shadow-lg shadow-indigo-900/10 disabled:opacity-50"
+            onClick={() => setIsShareModalOpen(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-indigo-900 text-white rounded-xl text-sm font-bold hover:bg-indigo-800 transition-colors shadow-lg shadow-indigo-900/10"
           >
-            {isExporting ? <Activity className="animate-spin" size={16} /> : <Download size={16} />}
-            {isExporting ? 'Exporting...' : 'Export'}
+            <Download size={16} />
+            Export
           </button>
         </div>
       </div>
@@ -468,6 +545,87 @@ export default function Dashboard() {
                 <button className="px-6 py-3 bg-white border border-slate-200 text-slate-600 font-bold rounded-xl hover:bg-slate-50 transition-all">
                   Close
                 </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Share Report Modal */}
+      <AnimatePresence>
+        {isShareModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsShareModalOpen(false)}
+              className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-lg bg-white rounded-[2rem] shadow-2xl overflow-hidden"
+            >
+              <div className="p-8 space-y-8">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="text-2xl font-black text-indigo-900">Share Report</h3>
+                    <p className="text-slate-500 font-medium">Send your business intelligence to your team.</p>
+                  </div>
+                  <button 
+                    onClick={() => setIsShareModalOpen(false)}
+                    className="p-2 hover:bg-slate-100 rounded-full text-slate-400"
+                  >
+                    <X size={24} />
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-4 gap-4">
+                  {shareSources.map((source) => (
+                    <button
+                      key={source.name}
+                      onClick={source.action}
+                      className="flex flex-col items-center gap-2 group"
+                    >
+                      <div className={`w-14 h-14 rounded-2xl ${source.color} flex items-center justify-center shadow-lg transition-transform group-hover:-translate-y-1`}>
+                        <source.icon size={24} />
+                      </div>
+                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{source.name}</span>
+                    </button>
+                  ))}
+                </div>
+
+                <div className="space-y-4">
+                  <div className="p-4 bg-slate-50 rounded-2xl flex items-center justify-between gap-4 border border-slate-100">
+                    <div className="flex items-center gap-3 overflow-hidden">
+                      <ExternalLink size={18} className="text-indigo-400 shrink-0" />
+                      <span className="text-xs font-medium text-slate-400 truncate">https://trackwise.app/reports/shared-view-8421</span>
+                    </div>
+                    <button 
+                      onClick={handleCopyLink}
+                      className="shrink-0 flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-50 transition-colors"
+                    >
+                      {copySuccess ? <Check size={14} className="text-emerald-500" /> : <Copy size={14} />}
+                      {copySuccess ? 'Copied' : 'Copy'}
+                    </button>
+                  </div>
+
+                  <button 
+                    onClick={handleDownload}
+                    disabled={isExporting}
+                    className="w-full py-4 bg-indigo-900 text-white rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-indigo-800 transition-all disabled:opacity-50"
+                  >
+                    {isExporting ? <Activity className="animate-spin" size={20} /> : <Download size={20} />}
+                    {isExporting ? 'Generating Report...' : 'Download PDF Report'}
+                  </button>
+                </div>
+              </div>
+
+              <div className="p-6 bg-slate-50 border-t border-slate-100 flex items-center justify-center gap-2">
+                <ShieldCheck size={16} className="text-emerald-500" />
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Secure End-to-End Encryption</span>
               </div>
             </motion.div>
           </div>
