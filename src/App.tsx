@@ -8,10 +8,12 @@ import Insights from './pages/Insights';
 import Subscription from './pages/Subscription';
 import Settings from './pages/Settings';
 import Layout from './components/Layout';
+import { Toaster } from 'sonner';
 
 function App() {
   return (
     <Router>
+      <Toaster position="top-right" richColors />
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Landing />} />
