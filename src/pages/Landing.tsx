@@ -136,7 +136,6 @@ export default function Landing() {
                 <div className="w-3 h-3 rounded-full bg-slate-300" />
               </div>
               <div className="px-3 py-1 bg-white border border-slate-200 rounded-md text-[10px] font-semibold text-slate-500 shadow-2xs">
-                trackwise.app/dashboard
               </div>
               <div className="w-12" />
             </div>
