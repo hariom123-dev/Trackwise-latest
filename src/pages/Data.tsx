@@ -86,7 +86,9 @@ export default function Data() {
     reader.readAsBinaryString(file);
   };
 
-  const runAnalysis = async () => {
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    
     // Check if data has changed to save quota
     const currentDataStr = JSON.stringify(formData);
     if (currentDataStr === lastSubmittedData && prediction && !error) {
@@ -113,11 +115,6 @@ export default function Data() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await runAnalysis();
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -201,78 +198,78 @@ export default function Data() {
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Monthly Revenue ($)</label>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Monthly Revenue ($)</label>
                 <input 
                   type="number" 
                   name="revenue"
                   value={formData.revenue}
                   onChange={handleChange}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 ring-indigo-500/20 outline-none transition-all"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-900 focus:bg-white focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 outline-none transition-all"
                 />
               </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Monthly Expenses ($)</label>
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Monthly Expenses ($)</label>
                 <input 
                   type="number" 
                   name="expenses"
                   value={formData.expenses}
                   onChange={handleChange}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 ring-indigo-500/20 outline-none transition-all"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-900 focus:bg-white focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 outline-none transition-all"
                 />
               </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Total Customers</label>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Total Active Customers</label>
                 <input 
                   type="number" 
                   name="customers"
                   value={formData.customers}
                   onChange={handleChange}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 ring-indigo-500/20 outline-none transition-all"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-900 focus:bg-white focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 outline-none transition-all"
                 />
               </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Churn Rate (%)</label>
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Churn Rate (%)</label>
                 <input 
                   type="number" 
                   step="0.1"
                   name="churnRate"
                   value={formData.churnRate}
                   onChange={handleChange}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 ring-indigo-500/20 outline-none transition-all"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-900 focus:bg-white focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 outline-none transition-all"
                 />
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Industry</label>
+            <div className="space-y-1.5">
+              <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Industry Vertical</label>
               <select 
                 name="industry"
                 value={formData.industry}
                 onChange={handleChange}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 ring-indigo-500/20 outline-none transition-all"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-900 focus:bg-white focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 outline-none transition-all"
               >
-                <option value="SaaS">SaaS</option>
-                <option value="E-commerce">E-commerce</option>
-                <option value="Fintech">Fintech</option>
-                <option value="Healthcare">Healthcare</option>
-                <option value="Real Estate">Real Estate</option>
+                <option value="SaaS">SaaS / Enterprise Software</option>
+                <option value="E-commerce">E-commerce / Retail</option>
+                <option value="Fintech">Fintech / Financial Services</option>
+                <option value="Healthcare">Healthcare & BioTech</option>
+                <option value="Real Estate">Real Estate & PropTech</option>
               </select>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Business Goals</label>
+            <div className="space-y-1.5">
+              <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Strategic Goals</label>
               <textarea 
                 name="goals"
                 value={formData.goals}
                 onChange={handleChange}
                 rows={3}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 ring-indigo-500/20 outline-none transition-all resize-none"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-medium text-slate-900 focus:bg-white focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 outline-none transition-all resize-none"
                 placeholder="e.g., Scale to $100k MRR..."
               />
             </div>
@@ -280,17 +277,17 @@ export default function Data() {
             <button 
               type="submit" 
               disabled={loading}
-              className="w-full bg-indigo-900 text-white py-4 rounded-xl font-bold shadow-xl shadow-indigo-900/10 flex items-center justify-center gap-3 hover:bg-indigo-800 transition-all disabled:opacity-50"
+              className="w-full bg-indigo-900 text-white py-3 rounded-xl text-xs font-bold shadow-md shadow-indigo-900/15 flex items-center justify-center gap-2 hover:bg-indigo-950 active:scale-95 transition-all disabled:opacity-50"
             >
               {loading ? (
                 <>
-                  <Loader2 className="animate-spin" size={20} />
-                  Analyzing Data...
+                  <Loader2 className="animate-spin" size={16} />
+                  <span>Processing Neural Prediction...</span>
                 </>
               ) : (
                 <>
-                  <BrainCircuit size={20} />
-                  Generate AI Prediction
+                  <BrainCircuit size={16} />
+                  <span>Generate AI Prediction</span>
                 </>
               )}
             </button>
@@ -298,90 +295,90 @@ export default function Data() {
         </div>
 
         {/* Results Area */}
-        <div id="prediction-report" className="lg:col-span-2 space-y-8">
+        <div id="prediction-report" className="lg:col-span-2 space-y-6">
           {error && (
-            <div className="bg-white border border-indigo-100 p-12 rounded-[2.5rem] text-center shadow-xl shadow-indigo-500/5">
-              <div className="w-20 h-20 rounded-3xl bg-indigo-50 flex items-center justify-center text-indigo-600 mx-auto mb-8 animate-pulse">
-                <Clock size={32} />
+            <div className="bg-white border border-slate-200/80 p-8 rounded-2xl text-center shadow-2xs">
+              <div className="w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 mx-auto mb-4">
+                <Clock size={24} />
               </div>
-              <h3 className="text-2xl font-black text-indigo-900 mb-3">Engine Optimization in Progress</h3>
-              <p className="text-slate-500 text-base mb-8 max-w-sm mx-auto leading-relaxed">{error}</p>
+              <h3 className="text-xl font-extrabold text-slate-900 mb-2">Engine Optimization in Progress</h3>
+              <p className="text-slate-500 text-xs mb-6 max-w-sm mx-auto leading-relaxed">{error}</p>
               <button 
-                onClick={runAnalysis}
-                className="group flex items-center gap-2 mx-auto px-8 py-4 bg-indigo-900 text-white rounded-2xl font-bold hover:bg-indigo-800 transition-all shadow-lg shadow-indigo-900/20"
+                onClick={handleSubmit}
+                className="group flex items-center gap-2 mx-auto px-6 py-3 bg-indigo-900 text-white rounded-xl text-xs font-bold hover:bg-indigo-950 transition-all shadow-xs"
               >
-                <RefreshCw size={18} className="group-hover:rotate-180 transition-transform duration-500" />
-                Refresh Intelligence
+                <RefreshCw size={15} className="group-hover:rotate-180 transition-transform duration-500" />
+                <span>Retry Neural Engine</span>
               </button>
             </div>
           )}
 
           {!prediction && !loading && !error && (
-            <div className="bg-white border border-slate-100 rounded-[2rem] h-full flex flex-col items-center justify-center p-12 text-center shadow-sm">
-              <div className="w-20 h-20 rounded-3xl bg-indigo-50 flex items-center justify-center text-indigo-600 mb-8 transform rotate-3 shadow-indigo-100/50 shadow-xl">
-                <BrainCircuit size={40} />
+            <div className="bg-white border border-slate-200/80 rounded-2xl min-h-[420px] flex flex-col items-center justify-center p-8 text-center shadow-2xs">
+              <div className="w-16 h-16 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 mb-6 shadow-2xs">
+                <BrainCircuit size={32} />
               </div>
-              <h3 className="text-2xl font-black text-indigo-900 mb-3">Intelligence Engine Ready</h3>
-              <p className="text-slate-500 max-w-md mb-8 leading-relaxed">
-                Connect your business metrics to our deep-learning engine. We'll generate a comprehensive 6-month forecast and strategic risk assessment.
+              <h3 className="text-xl font-extrabold text-slate-900 mb-2">Intelligence Engine Standby</h3>
+              <p className="text-slate-500 text-xs max-w-md mb-6 leading-relaxed">
+                Connect your financial metrics to our machine learning model. TrackWise generates a 6-month revenue projection, volatility risk assessment, and strategic recommendations.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 w-full max-w-sm">
+              <div className="flex flex-col sm:flex-row gap-3 w-full max-w-xs">
                 <button 
-                  onClick={runAnalysis}
-                  className="flex-1 py-4 bg-indigo-900 text-white rounded-2xl font-bold text-sm shadow-xl shadow-indigo-900/10 hover:bg-indigo-800 transition-all"
+                  onClick={handleSubmit}
+                  className="flex-1 py-3 bg-indigo-900 text-white rounded-xl text-xs font-bold shadow-xs hover:bg-indigo-950 transition-all active:scale-95"
                 >
                   Analyze Current Data
                 </button>
               </div>
-              <p className="mt-6 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Secure Neural Processing Active</p>
+              <p className="mt-6 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Encrypted Neural Pipeline Active</p>
             </div>
           )}
 
           {loading && (
-            <div className="bg-white p-12 rounded-[2rem] border border-slate-100 shadow-sm h-full flex flex-col items-center justify-center text-center">
-              <div className="relative mb-8">
-                <div className="w-24 h-24 rounded-full border-4 border-slate-100 border-t-indigo-600 animate-spin" />
-                <BrainCircuit className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-indigo-600" size={32} />
+            <div className="bg-white p-12 rounded-2xl border border-slate-200/80 shadow-2xs min-h-[420px] flex flex-col items-center justify-center text-center">
+              <div className="relative mb-6">
+                <div className="w-20 h-20 rounded-full border-4 border-slate-100 border-t-indigo-600 animate-spin" />
+                <BrainCircuit className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-indigo-600" size={28} />
               </div>
-              <h3 className="text-2xl font-extrabold text-indigo-900 mb-2">TrackWise is Thinking</h3>
-              <p className="text-slate-500 max-w-md">Processing your metrics through our neural network to identify trends and strategic opportunities...</p>
+              <h3 className="text-xl font-extrabold text-slate-900 mb-2">Processing Predictive Models</h3>
+              <p className="text-slate-500 text-xs max-w-md leading-relaxed">Evaluating industry benchmarks, revenue variance, and churn metrics through neural regression layers...</p>
             </div>
           )}
 
           {prediction && !loading && (
-            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <div className="space-y-6">
               {/* Summary Card */}
-              <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-xl font-bold text-indigo-900">Analysis Summary</h3>
-                  <div className={`px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-2 ${
-                    prediction.riskLevel === 'Low' ? 'bg-emerald-50 text-emerald-600' :
-                    prediction.riskLevel === 'Medium' ? 'bg-amber-50 text-amber-600' :
-                    'bg-rose-50 text-rose-600'
+              <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-2xs">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-base font-bold text-slate-900">Analysis Summary</h3>
+                  <div className={`px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1.5 ${
+                    prediction.riskLevel === 'Low' ? 'bg-emerald-50 text-emerald-700' :
+                    prediction.riskLevel === 'Medium' ? 'bg-amber-50 text-amber-700' :
+                    'bg-rose-50 text-rose-700'
                   }`}>
-                    <AlertTriangle size={14} />
-                    {prediction.riskLevel} Risk
+                    <AlertTriangle size={13} />
+                    <span>{prediction.riskLevel} Risk Profile</span>
                   </div>
                 </div>
-                <p className="text-slate-600 leading-relaxed text-lg">{prediction.summary}</p>
+                <p className="text-slate-700 leading-relaxed text-sm bg-slate-50/60 p-4 rounded-xl border border-slate-100 italic">{prediction.summary}</p>
               </div>
 
               {/* Chart Card */}
-              <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm">
-                <div className="flex items-center justify-between mb-8">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-emerald-50 text-emerald-600">
-                      <TrendingUp size={20} />
+              <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-2xs">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-2 rounded-xl bg-emerald-50 text-emerald-600">
+                      <TrendingUp size={18} />
                     </div>
-                    <h3 className="text-xl font-bold text-indigo-900">6-Month Revenue Forecast</h3>
+                    <h3 className="text-base font-bold text-slate-900">6-Month Revenue Projection</h3>
                   </div>
                 </div>
-                <div className="h-[300px] w-full">
+                <div className="h-[260px] w-full">
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={prediction.forecast}>
                       <defs>
                         <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.1}/>
+                          <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.15}/>
                           <stop offset="95%" stopColor="#4f46e5" stopOpacity={0}/>
                         </linearGradient>
                       </defs>
@@ -390,24 +387,24 @@ export default function Data() {
                         dataKey="month" 
                         axisLine={false} 
                         tickLine={false} 
-                        tick={{ fill: '#94a3b8', fontSize: 12, fontWeight: 600 }}
-                        dy={10}
+                        tick={{ fill: '#64748b', fontSize: 11, fontWeight: 600 }}
+                        dy={8}
                       />
                       <YAxis 
                         axisLine={false} 
                         tickLine={false} 
-                        tick={{ fill: '#94a3b8', fontSize: 12, fontWeight: 600 }}
+                        tick={{ fill: '#64748b', fontSize: 11, fontWeight: 600 }}
                         tickFormatter={(value) => `$${value / 1000}k`}
                       />
                       <Tooltip 
-                        contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
-                        formatter={(value: number) => [`$${value.toLocaleString()}`, 'Revenue']}
+                        contentStyle={{ borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                        formatter={(value: number) => [`$${value.toLocaleString()}`, 'Forecasted Revenue']}
                       />
                       <Area 
                         type="monotone" 
                         dataKey="revenue" 
                         stroke="#4f46e5" 
-                        strokeWidth={3}
+                        strokeWidth={2.5}
                         fillOpacity={1} 
                         fill="url(#colorRev)" 
                       />
@@ -418,68 +415,72 @@ export default function Data() {
 
               {/* Recommendations */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-indigo-900 p-8 rounded-[2rem] text-white shadow-xl shadow-indigo-900/20">
-                  <h3 className="text-xl font-bold mb-6 flex items-center gap-3">
-                    <Lightbulb className="text-amber-400" size={24} />
-                    Strategic Recommendations
-                  </h3>
-                  <div className="space-y-4">
-                    {prediction.recommendations.map((rec, i) => (
-                      <div key={i} className="flex gap-4 group">
-                        <div className="mt-1.5 shrink-0">
-                          <CheckCircle2 size={18} className="text-emerald-400" />
+                <div className="bg-indigo-900 p-6 rounded-2xl text-white shadow-md shadow-indigo-900/15 flex flex-col justify-between">
+                  <div>
+                    <h3 className="text-base font-bold mb-4 flex items-center gap-2">
+                      <Lightbulb className="text-amber-400" size={18} />
+                      Strategic Recommendations
+                    </h3>
+                    <div className="space-y-3">
+                      {prediction.recommendations.map((rec, i) => (
+                        <div key={i} className="flex gap-3 group">
+                          <div className="mt-0.5 shrink-0">
+                            <CheckCircle2 size={16} className="text-emerald-400" />
+                          </div>
+                          <p className="text-xs text-indigo-100 leading-relaxed font-medium">{rec}</p>
                         </div>
-                        <p className="text-sm text-indigo-100 leading-relaxed font-medium">{rec}</p>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                  <button className="w-full mt-8 py-3 bg-white/10 hover:bg-white/20 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2">
-                    Export Strategy Deck <ArrowRight size={16} />
+                  <button className="w-full mt-6 py-2.5 bg-white/10 hover:bg-white/15 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2">
+                    <span>Export Strategy Brief</span> <ArrowRight size={14} />
                   </button>
                 </div>
 
-                <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col justify-between">
+                <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-2xs flex flex-col justify-between">
                   <div>
-                    <h3 className="text-xl font-bold text-indigo-900 mb-6">Efficiency Score</h3>
-                    <div className="flex items-center justify-center py-4">
+                    <h3 className="text-base font-bold text-slate-900 mb-4">Operational Efficiency Index</h3>
+                    <div className="flex items-center justify-center py-2">
                       <div className="relative">
-                        <svg className="w-32 h-32 transform -rotate-90">
+                        <svg className="w-28 h-28 transform -rotate-90">
                           <circle
-                            cx="64"
-                            cy="64"
-                            r="58"
+                            cx="56"
+                            cy="56"
+                            r="50"
                             stroke="currentColor"
-                            strokeWidth="8"
+                            strokeWidth="7"
                             fill="transparent"
                             className="text-slate-100"
                           />
                           <motion.circle
-                            initial={{ strokeDashoffset: 364 }}
-                            animate={{ strokeDashoffset: 364 - (364 * prediction.efficiencyScore) / 100 }}
+                            initial={{ strokeDashoffset: 314 }}
+                            animate={{ strokeDashoffset: 314 - (314 * prediction.efficiencyScore) / 100 }}
                             transition={{ duration: 1.5, ease: "easeOut" }}
-                            cx="64"
-                            cy="64"
-                            r="58"
+                            cx="56"
+                            cy="56"
+                            r="50"
                             stroke="currentColor"
-                            strokeWidth="8"
-                            strokeDasharray={364}
+                            strokeWidth="7"
+                            strokeDasharray={314}
                             strokeLinecap="round"
                             fill="transparent"
                             className="text-indigo-600"
                           />
                         </svg>
                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
-                          <span className="text-3xl font-black text-indigo-900">{prediction.efficiencyScore}%</span>
+                          <span className="text-2xl font-black text-slate-900">{prediction.efficiencyScore}%</span>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <p className="text-sm text-slate-500 font-medium text-center mt-4 uppercase tracking-tighter">
-                    {prediction.efficiencyScore > 80 ? 'Exceptional Performance' : prediction.efficiencyScore > 50 ? 'Stable Performance' : 'Optimizing Required'}
-                  </p>
-                  <p className="text-[10px] text-slate-400 font-bold text-center mt-1">
-                    Based on industry benchmarks for {formData.industry}
-                  </p>
+                  <div className="text-center mt-2">
+                    <p className="text-xs font-bold text-slate-800">
+                      {prediction.efficiencyScore > 80 ? 'Exceptional Performance' : prediction.efficiencyScore > 50 ? 'Stable Performance' : 'Optimizing Required'}
+                    </p>
+                    <p className="text-[10px] text-slate-400 font-medium mt-0.5">
+                      Benchmarks relative to {formData.industry} vertical
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

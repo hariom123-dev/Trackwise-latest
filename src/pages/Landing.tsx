@@ -1,191 +1,263 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Bolt, UploadCloud, BrainCircuit, BarChart3, ShieldCheck, CheckCircle2, Globe, Share2, MessageSquare, Search } from 'lucide-react';
+import { 
+  ArrowRight, 
+  Sparkles, 
+  UploadCloud, 
+  BrainCircuit, 
+  BarChart3, 
+  ShieldCheck, 
+  CheckCircle2, 
+  Globe, 
+  Share2, 
+  MessageSquare, 
+  Search,
+  Zap,
+  TrendingUp,
+  Layers,
+  Lock,
+  ChevronRight
+} from 'lucide-react';
 import { motion } from 'motion/react';
 import { IMAGES } from '../constants';
 
 export default function Landing() {
+  const [isAnnual, setIsAnnual] = useState(true);
+
   return (
-    <div className="bg-[#f6fafe] font-sans text-[#171c1f] antialiased">
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 h-20 z-50 bg-white/70 backdrop-blur-xl flex items-center px-8 md:px-16 justify-between border-b border-slate-100/50">
-        <div className="flex items-center gap-2">
-          <span className="text-2xl font-black text-[#161c54] tracking-tighter">TrackWise</span>
-        </div>
-        <div className="hidden md:flex items-center gap-10">
-          <Link to="/dashboard" className="text-[#161c54] font-bold text-sm">Dashboard</Link>
-          <a href="#" className="text-[#46464f] font-medium text-sm hover:text-[#161c54] transition-colors">Data</a>
-          <Link to="/insights" className="text-[#46464f] font-medium text-sm hover:text-[#161c54] transition-colors">Insights</Link>
-          <a href="#" className="text-[#46464f] font-medium text-sm hover:text-[#161c54] transition-colors">Subscription</a>
-        </div>
-        <div className="flex items-center gap-4">
-          <button className="text-[#46464f] hover:text-[#161c54] transition-colors">
-            <Search size={20} />
-          </button>
-          <Link to="/login" className="bg-gradient-to-br from-[#161c54] to-[#2d336b] text-white px-6 py-2.5 rounded-lg font-bold text-sm shadow-lg shadow-[#161c54]/10 transition-transform active:scale-95">
-            Get Started
-          </Link>
-        </div>
-      </nav>
+    <div className="bg-[#f8fafc] font-sans text-slate-900 antialiased selection:bg-indigo-500/10 selection:text-indigo-900">
+      {/* Floating Navigation Bar */}
+      <div className="fixed top-4 left-0 right-0 z-50 px-4 sm:px-8 max-w-6xl mx-auto">
+        <nav className="bg-white/80 backdrop-blur-md border border-slate-200/80 shadow-xs rounded-2xl h-16 px-6 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-slate-900 flex items-center justify-center text-white font-black shadow-xs">
+              <Sparkles size={16} className="text-emerald-400" />
+            </div>
+            <span className="text-lg font-extrabold text-slate-900 tracking-tight">TrackWise</span>
+          </div>
+
+          <div className="hidden md:flex items-center gap-8">
+            <Link to="/dashboard" className="text-xs font-bold text-slate-700 hover:text-indigo-600 transition-colors">Dashboard</Link>
+            <Link to="/data" className="text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors">Data Lab</Link>
+            <Link to="/insights" className="text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors">Insights</Link>
+            <Link to="/subscription" className="text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors">Pricing</Link>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <Link 
+              to="/login" 
+              className="hidden sm:inline-flex text-xs font-semibold text-slate-700 hover:text-slate-900 px-3 py-2 transition-colors"
+            >
+              Sign In
+            </Link>
+            <Link 
+              to="/dashboard" 
+              className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-xs active:scale-95 flex items-center gap-1.5"
+            >
+              <span>Get Started</span>
+              <ArrowRight size={14} />
+            </Link>
+          </div>
+        </nav>
+      </div>
 
       {/* Hero Section */}
-      <header className="relative pt-40 pb-24 px-8 md:px-16 overflow-hidden">
-        <div className="absolute top-0 right-0 -z-10 w-2/3 h-full opacity-10 pointer-events-none">
-          <div className="absolute top-20 right-20 w-96 h-96 bg-[#161c54] rounded-full blur-[120px]"></div>
-          <div className="absolute bottom-0 right-0 w-80 h-80 bg-[#006c49] rounded-full blur-[100px]"></div>
-        </div>
-
-        <div className="max-w-7xl mx-auto flex flex-col items-start gap-8">
+      <section className="relative pt-36 pb-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto text-center">
+        <div className="space-y-6 max-w-4xl mx-auto flex flex-col items-center">
+          {/* Badge */}
           <motion.div 
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#6cf8bb] text-[#00714d] text-[10px] font-bold tracking-widest uppercase"
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 border border-slate-200/80 text-xs font-semibold text-slate-700 shadow-2xs"
           >
-            <Bolt size={14} fill="currentColor" />
-            Next-Gen ML Forecasting
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-indigo-900 font-bold">TrackWise v3.4</span>
+            <span className="text-slate-300">•</span>
+            <span>Next-Gen ML Forecasting Engine</span>
+            <ChevronRight size={12} className="text-slate-400" />
           </motion.div>
 
+          {/* Main Title */}
           <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-5xl md:text-7xl font-extrabold text-[#161c54] leading-[1.1] tracking-tight max-w-4xl"
+            className="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-slate-900 leading-[1.08] tracking-tight"
           >
-            Turn Your Data Into Your <span className="text-[#006c49] italic">Competitive Edge</span>
+            Turn Your Business Data Into Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-900 via-indigo-700 to-indigo-950">Competitive Advantage</span>
           </motion.h1>
 
+          {/* Subtitle */}
           <motion.p 
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-[#46464f] text-lg md:text-xl max-w-2xl leading-relaxed"
+            className="text-base sm:text-lg text-slate-600 max-w-2xl font-normal leading-relaxed"
           >
-            Experience high-stakes decision making powered by predictive intelligence. TrackWise transforms raw business metrics into an editorial-grade strategy dashboard.
+            High-stakes decision making powered by predictive ML intelligence. TrackWise transforms raw financial and operational metrics into an editorial-grade strategy dashboard.
           </motion.p>
 
+          {/* Call to Actions */}
           <motion.div 
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="flex flex-col sm:flex-row gap-4 mt-4"
+            className="flex flex-col sm:flex-row gap-3 pt-2"
           >
-            <Link to="/login" className="bg-gradient-to-br from-[#161c54] to-[#2d336b] text-white px-8 py-4 rounded-lg font-bold text-base shadow-xl shadow-[#161c54]/20 flex items-center gap-3 group">
-              Start Free Trial
-              <ArrowRight className="group-hover:translate-x-1 transition-transform" />
+            <Link 
+              to="/dashboard" 
+              className="bg-indigo-900 hover:bg-indigo-950 text-white px-7 py-3.5 rounded-xl font-bold text-sm shadow-md shadow-indigo-900/15 flex items-center justify-center gap-2.5 active:scale-95 transition-all"
+            >
+              Start Free 14-Day Trial
+              <ArrowRight size={16} />
             </Link>
-            <button className="bg-[#e4e9ed] text-[#161c54] px-8 py-4 rounded-lg font-bold text-base hover:bg-[#dfe3e7] transition-colors">
-              View Demo
-            </button>
-          </motion.div>
-
-          {/* Hero Image */}
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.4, duration: 0.8 }}
-            className="w-full mt-20 relative"
-          >
-            <div className="bg-white rounded-xl shadow-2xl p-4 md:p-8 relative overflow-hidden border border-slate-100">
-              <img 
-                src={IMAGES.HERO_DASHBOARD} 
-                alt="Dashboard Preview" 
-                className="w-full h-auto rounded-lg shadow-sm border border-slate-100"
-                referrerPolicy="no-referrer"
-              />
-              {/* Floating Data Chip */}
-              <div className="absolute bottom-16 right-16 bg-white/90 backdrop-blur-md p-6 rounded-xl shadow-2xl border border-slate-200/50 hidden md:block">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-[#6cf8bb] flex items-center justify-center text-[#00714d]">
-                    <BarChart3 size={24} />
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-[#46464f] uppercase tracking-wider">Revenue Forecast</p>
-                    <p className="text-2xl font-extrabold text-[#161c54]">+24.8% YoY</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <Link 
+              to="/insights" 
+              className="bg-white border border-slate-200/80 hover:bg-slate-50 text-slate-700 hover:text-slate-900 px-7 py-3.5 rounded-xl font-semibold text-sm transition-all shadow-2xs flex items-center justify-center gap-2"
+            >
+              Explore Live Insights
+            </Link>
           </motion.div>
         </div>
-      </header>
 
-      {/* Client Logos */}
-      <section className="py-12 bg-[#f0f4f8]">
-        <div className="max-w-7xl mx-auto px-8">
-          <p className="text-center text-[10px] font-bold text-[#46464f] uppercase tracking-[0.2em] mb-10">Trusted by Global Industry Leaders</p>
-          <div className="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-40 grayscale hover:grayscale-0 transition-all">
-            <span className="text-2xl font-black">VOLTA</span>
-            <span className="text-2xl font-black">KINETIC</span>
-            <span className="text-2xl font-black">AETHER</span>
-            <span className="text-2xl font-black">NEXUS</span>
-            <span className="text-2xl font-black">ORBIT</span>
+        {/* Dashboard Frame Preview */}
+        <motion.div 
+          initial={{ opacity: 0, y: 32 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.6 }}
+          className="mt-16 relative max-w-5xl mx-auto"
+        >
+          <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xl overflow-hidden">
+            {/* Mock Window Controls */}
+            <div className="bg-slate-100/80 border-b border-slate-200/60 px-4 py-3 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-slate-300" />
+                <div className="w-3 h-3 rounded-full bg-slate-300" />
+                <div className="w-3 h-3 rounded-full bg-slate-300" />
+              </div>
+              <div className="px-3 py-1 bg-white border border-slate-200 rounded-md text-[10px] font-semibold text-slate-500 shadow-2xs">
+                trackwise.app/dashboard
+              </div>
+              <div className="w-12" />
+            </div>
+
+            <div className="p-2 sm:p-4 bg-slate-50">
+              <img 
+                src={IMAGES.HERO_DASHBOARD} 
+                alt="TrackWise Dashboard Preview" 
+                className="w-full rounded-xl border border-slate-200/70 shadow-xs"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+          </div>
+
+          {/* Floating Metric Callout */}
+          <div className="absolute -bottom-6 right-6 bg-white border border-slate-200 p-4 rounded-2xl shadow-xl hidden sm:flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+              <TrendingUp size={20} />
+            </div>
+            <div className="text-left">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Revenue Forecast</p>
+              <p className="text-lg font-black text-slate-900">+24.8% YoY Projected</p>
+            </div>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* Trust Badges Bar */}
+      <section className="py-12 bg-white border-y border-slate-200/60">
+        <div className="max-w-6xl mx-auto px-4 text-center">
+          <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-8">
+            Trusted by 1,500+ High-Growth Finance & Strategy Teams
+          </p>
+          <div className="flex flex-wrap justify-center items-center gap-10 sm:gap-16 opacity-60 font-black text-slate-400 tracking-wider text-xl">
+            <span>VOLTA</span>
+            <span>KINETIC</span>
+            <span>AETHER</span>
+            <span>NEXUS</span>
+            <span>ORBIT</span>
           </div>
         </div>
       </section>
 
-      {/* Features Bento Grid */}
-      <section className="py-24 px-8 md:px-16 max-w-7xl mx-auto">
-        <div className="mb-16">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-[#161c54] mb-4">Precision Tools for Modern Analysts</h2>
-          <p className="text-[#46464f] max-w-xl">Move beyond spreadsheets. Our engine provides the intellectual space needed for complex problem-solving.</p>
+      {/* Features Bento Section */}
+      <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
+        <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 text-xs font-bold uppercase tracking-wider">
+            <Layers size={14} /> Core Modules
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+            Engineered for Precision & Clarity
+          </h2>
+          <p className="text-slate-600 text-sm font-medium leading-relaxed">
+            Move beyond static spreadsheets. Our intelligent analytical workspace gives you the clarity required to execute complex financial strategies.
+          </p>
         </div>
 
+        {/* Bento Grid */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-          {/* Feature 1 */}
-          <div className="md:col-span-4 bg-[#f0f4f8] p-8 rounded-xl flex flex-col justify-between group hover:shadow-lg transition-shadow">
+          {/* Card 1 */}
+          <div className="md:col-span-5 bg-white p-8 rounded-2xl border border-slate-200/80 shadow-2xs flex flex-col justify-between group hover:border-indigo-200 transition-all">
             <div>
-              <div className="w-12 h-12 rounded-lg bg-[#2d336b] text-white flex items-center justify-center mb-6">
-                <UploadCloud size={24} />
+              <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center mb-6">
+                <UploadCloud size={20} />
               </div>
-              <h3 className="text-xl font-bold text-[#161c54] mb-3">Seamless Data Ingestion</h3>
-              <p className="text-sm text-[#46464f] leading-relaxed">Drag and drop CSV or Excel files. Our AI automatically maps your schema and cleans outliers in milliseconds.</p>
+              <h3 className="text-xl font-bold text-slate-900 mb-2">Automated Data Ingestion</h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Drag & drop CSV or Excel files. TrackWise automatically parses schemas, cleans outliers, and normalizes time series data in milliseconds.
+              </p>
             </div>
-            <div className="mt-8 overflow-hidden rounded-lg shadow-sm border border-slate-200/50">
+            <div className="mt-8 rounded-xl overflow-hidden border border-slate-100 shadow-2xs">
               <img 
                 src={IMAGES.FEATURE_CSV} 
-                alt="Data Ingestion" 
-                className="w-full object-cover h-32 group-hover:scale-105 transition-transform duration-500"
+                alt="CSV Ingestion" 
+                className="w-full h-36 object-cover group-hover:scale-105 transition-transform duration-500"
                 referrerPolicy="no-referrer"
               />
             </div>
           </div>
 
-          {/* Feature 2 */}
-          <div className="md:col-span-8 bg-gradient-to-br from-[#161c54] to-[#2d336b] p-8 rounded-xl flex flex-col md:flex-row gap-8 items-center text-white overflow-hidden relative group">
-            <div className="z-10 md:w-1/2">
-              <div className="w-12 h-12 rounded-lg bg-white/10 flex items-center justify-center mb-6 backdrop-blur-md">
-                <BrainCircuit size={24} className="text-[#6ffbbe]" />
+          {/* Card 2 */}
+          <div className="md:col-span-7 bg-slate-900 text-white p-8 rounded-2xl border border-slate-800 shadow-2xs flex flex-col justify-between relative overflow-hidden group">
+            <div className="z-10 max-w-md">
+              <div className="w-10 h-10 rounded-xl bg-white/10 text-emerald-400 flex items-center justify-center mb-6 backdrop-blur-xs">
+                <BrainCircuit size={20} />
               </div>
-              <h3 className="text-3xl font-extrabold mb-4">ML-Powered Predictive Intelligence</h3>
-              <p className="text-[#979ddd] text-base leading-relaxed mb-8">Stop looking at what happened. Start seeing what will. Our proprietary algorithms identify seasonal trends and market shifts before they occur.</p>
-              <button className="text-[#6ffbbe] font-bold flex items-center gap-2 hover:gap-4 transition-all">
-                Explore Forecasting Models <ArrowRight size={18} />
-              </button>
+              <h3 className="text-2xl font-bold mb-3">ML-Powered Predictive Analytics</h3>
+              <p className="text-xs text-slate-300 leading-relaxed mb-6 font-normal">
+                Proprietary predictive algorithms identify seasonal volatility, CAC trends, and market shifts before they impact your balance sheet.
+              </p>
+              <Link to="/data" className="inline-flex items-center gap-2 text-xs font-bold text-emerald-400 hover:text-emerald-300 transition-colors">
+                Run Model Diagnostics <ArrowRight size={14} />
+              </Link>
             </div>
-            <div className="md:w-1/2 relative">
+
+            <div className="mt-8 relative z-10">
               <img 
                 src={IMAGES.FEATURE_ML} 
-                alt="ML Financial Forecasting Graph & Analytics" 
-                className="w-full h-64 object-cover rounded-lg shadow-2xl rotate-2 group-hover:rotate-0 transition-transform duration-700"
+                alt="Predictive Graph" 
+                className="w-full h-48 object-cover rounded-xl border border-slate-800 shadow-xl group-hover:scale-[1.02] transition-transform duration-500"
                 referrerPolicy="no-referrer"
               />
-              <div className="absolute bottom-3 right-3 bg-slate-900/90 backdrop-blur-md px-4 py-2.5 rounded-lg border border-white/10 shadow-xl flex items-center gap-3">
-                <div className="w-2.5 h-2.5 rounded-full bg-[#6ffbbe] animate-pulse" />
-                <div>
-                  <p className="text-[10px] font-bold text-[#979ddd] uppercase tracking-wider">Predictive Revenue Graph</p>
-                  <p className="text-sm font-extrabold text-[#6ffbbe]">$1.4M Projected Growth</p>
-                </div>
+              <div className="absolute bottom-3 right-3 bg-slate-950/90 backdrop-blur-md px-3.5 py-2 rounded-lg border border-slate-800 flex items-center gap-2.5">
+                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-xs font-extrabold text-emerald-400">$1.4M Projected Growth</span>
               </div>
             </div>
           </div>
 
-          {/* Feature 3 */}
-          <div className="md:col-span-7 bg-[#f0f4f8] p-8 rounded-xl flex items-center gap-8 group hover:shadow-lg transition-shadow">
-            <div className="w-1/2">
-              <h3 className="text-xl font-bold text-[#161c54] mb-3">Interactive Narratives</h3>
-              <p className="text-sm text-[#46464f] leading-relaxed">Charts aren't just static images. Drill down into every data point, filter by segment, and export editorial-grade reports with one click.</p>
+          {/* Card 3 */}
+          <div className="md:col-span-7 bg-white p-8 rounded-2xl border border-slate-200/80 shadow-2xs flex flex-col sm:flex-row items-center gap-6 group hover:border-indigo-200 transition-all">
+            <div className="flex-1">
+              <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center mb-4">
+                <BarChart3 size={20} />
+              </div>
+              <h3 className="text-lg font-bold text-slate-900 mb-2">Dynamic Visual Narratives</h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Filter by segment, drill down into granular KPIs, and export presentation-ready PDF reports with a single click.
+              </p>
             </div>
-            <div className="w-1/2 h-full bg-white rounded-lg p-4 shadow-sm border border-slate-200/5">
+            <div className="w-full sm:w-48 h-36 bg-slate-50 rounded-xl border border-slate-100 p-2 overflow-hidden shrink-0">
               <img 
                 src={IMAGES.FEATURE_CHARTS} 
                 alt="Interactive Charts" 
@@ -195,156 +267,197 @@ export default function Landing() {
             </div>
           </div>
 
-          {/* Feature 4 */}
-          <div className="md:col-span-5 bg-[#6cf8bb]/10 p-8 rounded-xl border border-[#006c49]/10 hover:shadow-lg transition-shadow">
-            <div className="w-12 h-12 rounded-lg bg-[#006c49] text-white flex items-center justify-center mb-6">
-              <ShieldCheck size={24} />
+          {/* Card 4 */}
+          <div className="md:col-span-5 bg-emerald-50/50 p-8 rounded-2xl border border-emerald-100/80 shadow-2xs flex flex-col justify-between">
+            <div>
+              <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center mb-6">
+                <ShieldCheck size={20} />
+              </div>
+              <h3 className="text-lg font-bold text-slate-900 mb-2">SOC2 Type II Enterprise Security</h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Bank-grade encryption in transit and at rest. Your proprietary dataset remains confidential and is never used to train public LLMs.
+              </p>
             </div>
-            <h3 className="text-xl font-bold text-[#161c54] mb-3">Enterprise-Grade Security</h3>
-            <p className="text-sm text-[#46464f] leading-relaxed">SOC2 Type II compliant. Your proprietary data remains yours, encrypted at rest and in transit with bank-level protocols.</p>
+            <div className="mt-6 flex items-center gap-2 text-xs font-bold text-emerald-700">
+              <Lock size={14} /> Encrypted & Compliant
+            </div>
           </div>
         </div>
       </section>
 
       {/* Pricing Section */}
-      <section className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-extrabold text-[#161c54] mb-4">Investment in Insight</h2>
-            <p className="text-[#46464f] max-w-xl mx-auto text-lg">Choose the tier that matches your firm's ambition. Flexible plans for high-growth teams.</p>
-            
-            <div className="flex items-center justify-center mt-10 gap-4">
-              <span className="text-sm font-bold text-[#161c54]">Monthly</span>
-              <button className="w-12 h-6 rounded-full bg-[#2d336b] relative p-1">
-                <div className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full"></div>
+      <section className="py-24 bg-white border-t border-slate-200/60">
+        <div className="max-w-5xl mx-auto px-4">
+          <div className="text-center max-w-xl mx-auto mb-16 space-y-3">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Transparent Pricing Plans</h2>
+            <p className="text-xs sm:text-sm text-slate-500 font-medium">Choose the tier that matches your organization's analytical scope.</p>
+
+            <div className="inline-flex items-center gap-3 bg-slate-100 p-1.5 rounded-xl mt-6 border border-slate-200/60">
+              <button 
+                onClick={() => setIsAnnual(false)}
+                className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${!isAnnual ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500 hover:text-slate-800'}`}
+              >
+                Monthly
               </button>
-              <span className="text-sm font-medium text-[#46464f]">Yearly <span className="text-[#006c49] font-bold text-[10px] ml-1">SAVE 20%</span></span>
+              <button 
+                onClick={() => setIsAnnual(true)}
+                className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${isAnnual ? 'bg-indigo-900 text-white shadow-2xs' : 'text-slate-500 hover:text-slate-800'}`}
+              >
+                Annual <span className="text-[10px] bg-emerald-400 text-slate-950 font-black px-1.5 py-0.2 rounded-full">Save 20%</span>
+              </button>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {/* Professional Plan */}
-            <div className="bg-white p-10 rounded-xl border border-slate-200 shadow-sm flex flex-col hover:shadow-xl transition-shadow">
-              <h3 className="text-sm font-bold text-[#46464f] uppercase tracking-widest mb-2">Professional</h3>
-              <div className="flex items-baseline gap-1 mb-8">
-                <span className="text-4xl font-extrabold text-[#161c54]">$129</span>
-                <span className="text-[#46464f] text-sm">/month</span>
+            <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-2xs flex flex-col justify-between hover:border-slate-300 transition-all">
+              <div>
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2">Professional</span>
+                <div className="flex items-baseline gap-1 mb-6">
+                  <span className="text-4xl font-extrabold text-slate-900">{isAnnual ? '$99' : '$129'}</span>
+                  <span className="text-slate-500 text-xs font-medium">/ month</span>
+                </div>
+                <ul className="space-y-3 mb-8">
+                  {[
+                    "Up to 10M Data Rows",
+                    "ML Trend & Churn Analysis",
+                    "Custom PDF Report Export",
+                    "Standard API Access (10k calls/mo)",
+                    "Email & Chat Support"
+                  ].map((feat, i) => (
+                    <li key={i} className="flex items-center gap-2.5 text-xs text-slate-600 font-medium">
+                      <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+                      {feat}
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <ul className="space-y-4 mb-10 flex-grow">
-                {[
-                  "Up to 10M Data Rows",
-                  "ML Trend Analysis",
-                  "Custom Report Templates",
-                  "API Access (10k calls)"
-                ].map((feature, i) => (
-                  <li key={i} className="flex items-center gap-3 text-sm text-[#46464f]">
-                    <CheckCircle2 size={18} className="text-[#006c49]" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-              <button className="w-full py-4 rounded-lg bg-[#e4e9ed] text-[#161c54] font-bold hover:bg-[#dfe3e7] transition-colors">
-                Select Plan
-              </button>
+              <Link 
+                to="/subscription" 
+                className="w-full py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-900 text-xs font-bold text-center transition-colors block"
+              >
+                Select Professional
+              </Link>
             </div>
 
             {/* Enterprise Plan */}
-            <div className="bg-gradient-to-br from-[#161c54] to-[#2d336b] p-10 rounded-xl text-white shadow-2xl relative overflow-hidden flex flex-col hover:scale-[1.02] transition-transform">
-              <div className="absolute top-0 right-0 bg-[#006c49] px-4 py-1 text-[10px] font-black uppercase tracking-widest text-white rounded-bl-lg">Recommended</div>
-              <h3 className="text-sm font-bold text-[#dfe0ff] uppercase tracking-widest mb-2">Enterprise</h3>
-              <div className="flex items-baseline gap-1 mb-8">
-                <span className="text-4xl font-extrabold">$299</span>
-                <span className="text-[#979ddd] text-sm">/month</span>
+            <div className="bg-slate-900 text-white p-8 rounded-2xl border border-slate-800 shadow-xl flex flex-col justify-between relative overflow-hidden">
+              <div className="absolute top-0 right-0 bg-emerald-500 text-slate-950 text-[10px] font-black uppercase tracking-wider px-3.5 py-1 rounded-bl-xl">
+                Most Popular
               </div>
-              <ul className="space-y-4 mb-10 flex-grow">
-                {[
-                  "Unlimited Data Ingestion",
-                  "Real-time Forecasting",
-                  "Priority Dedicated Analyst",
-                  "White-label Dashboards",
-                  "SSO & Advanced Security"
-                ].map((feature, i) => (
-                  <li key={i} className="flex items-center gap-3 text-sm text-[#dfe0ff]">
-                    <CheckCircle2 size={18} className="text-[#6ffbbe]" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-              <button className="w-full py-4 rounded-lg bg-[#006c49] text-white font-bold shadow-lg shadow-[#006c49]/20 hover:brightness-110 transition-all">
-                Get Started Now
-              </button>
+              <div>
+                <span className="text-xs font-bold text-indigo-300 uppercase tracking-widest block mb-2">Enterprise</span>
+                <div className="flex items-baseline gap-1 mb-6">
+                  <span className="text-4xl font-extrabold text-white">{isAnnual ? '$225' : '$299'}</span>
+                  <span className="text-slate-400 text-xs font-medium">/ month</span>
+                </div>
+                <ul className="space-y-3 mb-8">
+                  {[
+                    "Unlimited Data Row Processing",
+                    "Real-Time ML Forecasting Engine",
+                    "White-Label Executive Dashboards",
+                    "Dedicated Senior Analyst Support",
+                    "SSO & SOC2 Enterprise Compliance",
+                    "24/7 Priority SLA"
+                  ].map((feat, i) => (
+                    <li key={i} className="flex items-center gap-2.5 text-xs text-slate-200 font-medium">
+                      <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
+                      {feat}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <Link 
+                to="/subscription" 
+                className="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-extrabold text-center transition-colors block shadow-md"
+              >
+                Start Enterprise Trial
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Final CTA */}
-      <section className="py-24 px-8 md:px-16">
-        <div className="max-w-5xl mx-auto bg-[#f0f4f8] rounded-3xl p-12 md:p-20 text-center relative overflow-hidden border border-slate-200/50">
-          <div className="absolute -top-24 -left-24 w-64 h-64 bg-[#006c49]/5 rounded-full blur-[80px]"></div>
-          <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-[#161c54]/5 rounded-full blur-[80px]"></div>
-          
-          <h2 className="text-4xl md:text-5xl font-extrabold text-[#161c54] mb-6 relative z-10">Ready to Master Your Market?</h2>
-          <p className="text-[#46464f] text-lg max-w-2xl mx-auto mb-10 relative z-10">Join over 1,500 analytics-driven companies who rely on TrackWise to navigate their future.</p>
-          
-          <div className="flex flex-col sm:flex-row justify-center gap-4 relative z-10">
-            <Link to="/login" className="bg-gradient-to-br from-[#161c54] to-[#2d336b] text-white px-10 py-5 rounded-lg font-bold text-lg shadow-xl shadow-[#161c54]/20">
-              Get Started Free
+      {/* CTA Footer Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
+        <div className="bg-gradient-to-br from-slate-900 to-indigo-950 rounded-3xl p-10 sm:p-16 text-center text-white relative overflow-hidden shadow-xl border border-indigo-900/50">
+          <h2 className="text-3xl sm:text-4xl font-extrabold mb-4 tracking-tight">Ready to Master Your Business Strategy?</h2>
+          <p className="text-slate-300 text-xs sm:text-sm max-w-xl mx-auto mb-8 font-medium leading-relaxed">
+            Join over 1,500 analytics-driven organizations who rely on TrackWise for reliable predictive foresight.
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-3">
+            <Link 
+              to="/login" 
+              className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-8 py-3.5 rounded-xl font-bold text-xs shadow-md transition-all active:scale-95"
+            >
+              Start Free 14-Day Trial
             </Link>
-            <button className="bg-white text-[#161c54] px-10 py-5 rounded-lg font-bold text-lg border border-slate-200 hover:bg-[#f0f4f8] transition-colors">
-              Talk to Sales
-            </button>
+            <Link 
+              to="/dashboard" 
+              className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-8 py-3.5 rounded-xl font-bold text-xs transition-colors"
+            >
+              View Live Demo
+            </Link>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-white py-16 px-8 md:px-16 border-t border-slate-100">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
-          <div className="col-span-1 md:col-span-1">
-            <span className="text-xl font-black text-[#161c54] mb-6 block">TrackWise</span>
-            <p className="text-sm text-[#46464f] leading-relaxed">Defining the standard for business intelligence through rigorous analysis and superior design.</p>
+      <footer className="bg-white py-12 px-4 sm:px-6 lg:px-8 border-t border-slate-200/60 text-xs font-medium text-slate-500">
+        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
+          <div className="col-span-2">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-6 h-6 rounded-lg bg-slate-900 flex items-center justify-center text-white font-black text-xs">
+                <Sparkles size={12} className="text-emerald-400" />
+              </div>
+              <span className="text-base font-extrabold text-slate-900">TrackWise</span>
+            </div>
+            <p className="text-xs text-slate-500 max-w-sm leading-relaxed mb-4">
+              Setting the standard for predictive business intelligence through rigorous algorithms and handcrafted interface design.
+            </p>
           </div>
-          
+
           <div>
-            <h4 className="font-bold text-[#161c54] mb-6 text-sm">Platform</h4>
-            <ul className="space-y-4 text-sm text-[#46464f]">
-              <li><a href="#" className="hover:text-[#161c54] transition-colors">Forecasting</a></li>
-              <li><a href="#" className="hover:text-[#161c54] transition-colors">Data Engine</a></li>
-              <li><a href="#" className="hover:text-[#161c54] transition-colors">Security</a></li>
-              <li><a href="#" className="hover:text-[#161c54] transition-colors">Pricing</a></li>
+            <h4 className="font-bold text-slate-900 mb-3 text-xs uppercase tracking-wider">Product</h4>
+            <ul className="space-y-2 text-xs">
+              <li><Link to="/dashboard" className="hover:text-slate-900 transition-colors">Dashboard</Link></li>
+              <li><Link to="/data" className="hover:text-slate-900 transition-colors">Data Lab</Link></li>
+              <li><Link to="/insights" className="hover:text-slate-900 transition-colors">ML Insights</Link></li>
+              <li><Link to="/subscription" className="hover:text-slate-900 transition-colors">Pricing</Link></li>
             </ul>
           </div>
 
           <div>
-            <h4 className="font-bold text-[#161c54] mb-6 text-sm">Resources</h4>
-            <ul className="space-y-4 text-sm text-[#46464f]">
-              <li><a href="#" className="hover:text-[#161c54] transition-colors">Documentation</a></li>
-              <li><a href="#" className="hover:text-[#161c54] transition-colors">API Reference</a></li>
-              <li><a href="#" className="hover:text-[#161c54] transition-colors">Analyst Blog</a></li>
-              <li><a href="#" className="hover:text-[#161c54] transition-colors">Case Studies</a></li>
+            <h4 className="font-bold text-slate-900 mb-3 text-xs uppercase tracking-wider">Resources</h4>
+            <ul className="space-y-2 text-xs">
+              <li><a href="#" className="hover:text-slate-900 transition-colors">Documentation</a></li>
+              <li><a href="#" className="hover:text-slate-900 transition-colors">API Reference</a></li>
+              <li><a href="#" className="hover:text-slate-900 transition-colors">Security Whitepaper</a></li>
+              <li><a href="#" className="hover:text-slate-900 transition-colors">Case Studies</a></li>
             </ul>
           </div>
 
           <div>
-            <h4 className="font-bold text-[#161c54] mb-6 text-sm">Legal</h4>
-            <ul className="space-y-4 text-sm text-[#46464f]">
-              <li><a href="#" className="hover:text-[#161c54] transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="hover:text-[#161c54] transition-colors">Terms of Service</a></li>
-              <li><a href="#" className="hover:text-[#161c54] transition-colors">Security Audit</a></li>
+            <h4 className="font-bold text-slate-900 mb-3 text-xs uppercase tracking-wider">Company</h4>
+            <ul className="space-y-2 text-xs">
+              <li><a href="#" className="hover:text-slate-900 transition-colors">About TrackWise</a></li>
+              <li><a href="#" className="hover:text-slate-900 transition-colors">Privacy Policy</a></li>
+              <li><a href="#" className="hover:text-slate-900 transition-colors">Terms of Service</a></li>
+              <li><a href="#" className="hover:text-slate-900 transition-colors">Contact Support</a></li>
             </ul>
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto mt-16 pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-[10px] font-bold text-[#46464f] tracking-widest uppercase">© 2024 TrackWise. All Rights Reserved.</p>
-          <div className="flex gap-6">
-            <a href="#" className="text-[#46464f] hover:text-[#161c54]"><Globe size={18} /></a>
-            <a href="#" className="text-[#46464f] hover:text-[#161c54]"><Share2 size={18} /></a>
-            <a href="#" className="text-[#46464f] hover:text-[#161c54]"><MessageSquare size={18} /></a>
+        <div className="max-w-6xl mx-auto pt-6 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4 text-[11px] text-slate-400">
+          <p>© 2026 TrackWise Inc. All Rights Reserved.</p>
+          <div className="flex gap-4">
+            <a href="#" className="hover:text-slate-700 transition-colors">Privacy</a>
+            <a href="#" className="hover:text-slate-700 transition-colors">Terms</a>
+            <a href="#" className="hover:text-slate-700 transition-colors">Security</a>
           </div>
         </div>
       </footer>
     </div>
   );
 }
+

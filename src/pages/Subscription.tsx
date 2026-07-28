@@ -109,28 +109,28 @@ export default function Subscription() {
   };
 
   return (
-    <div className="space-y-12 max-w-6xl mx-auto">
-      <div className="text-center space-y-4">
-        <h1 className="text-4xl font-extrabold text-indigo-900 tracking-tight">Subscription Plans</h1>
-        <p className="text-slate-500 max-w-2xl mx-auto font-medium">
-          Scale your predictive intelligence with our flexible enterprise tiers. Choose the plan that matches your firm's ambition.
+    <div className="space-y-8 max-w-5xl mx-auto pb-12">
+      <div className="text-center space-y-3 pb-2 border-b border-slate-200/60">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Subscription Plans</h1>
+        <p className="text-xs sm:text-sm text-slate-500 max-w-xl mx-auto font-medium">
+          Transparent, predictable enterprise pricing tailored to scale your data strategy without unexpected surge costs.
         </p>
 
         {/* Interval Toggle */}
-        <div className="flex items-center justify-center mt-8 p-1 bg-slate-100 rounded-2xl w-fit mx-auto">
+        <div className="flex items-center justify-center mt-6 p-1 bg-slate-100 rounded-xl w-fit mx-auto border border-slate-200/80">
           {(['monthly', 'halfyearly', 'yearly'] as Interval[]).map((item) => (
             <button
               key={item}
               onClick={() => setInterval(item)}
-              className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
+              className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
                 interval === item 
-                  ? 'bg-white text-indigo-900 shadow-sm' 
-                  : 'text-slate-500 hover:text-indigo-700'
+                  ? 'bg-white text-slate-900 shadow-2xs' 
+                  : 'text-slate-500 hover:text-slate-800'
               }`}
             >
               {item.charAt(0).toUpperCase() + item.slice(1)}
               {item !== 'monthly' && (
-                <span className="ml-2 text-[10px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded-md">
+                <span className="ml-1.5 text-[9px] font-bold bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded">
                   SAVE {item === 'halfyearly' ? '15%' : '25%'}
                 </span>
               )}
@@ -140,53 +140,59 @@ export default function Subscription() {
       </div>
 
       {error && (
-        <div className="bg-rose-50 border border-rose-100 p-4 rounded-2xl flex items-center gap-3 text-rose-600 text-sm font-medium animate-in fade-in slide-in-from-top-2">
-          <AlertCircle size={18} />
-          {error}
+        <div className="bg-slate-50 border border-slate-200 p-3.5 rounded-xl flex items-center gap-2.5 text-slate-700 text-xs font-medium">
+          <AlertCircle size={16} className="text-slate-500" />
+          <span>{error}</span>
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {plans.map((plan) => (
           <div 
             key={plan.id} 
-            className={`${plan.color} ${plan.textColor} p-10 rounded-[2.5rem] border border-slate-100 shadow-sm relative overflow-hidden flex flex-col group hover:shadow-2xl transition-all duration-500`}
+            className={`${plan.id === 'enterprise' ? 'bg-indigo-950 text-white border-indigo-900' : 'bg-white text-slate-900 border-slate-200/80'} p-8 rounded-2xl border shadow-2xs relative overflow-hidden flex flex-col justify-between`}
           >
             {plan.recommended && (
-              <div className="absolute top-0 right-0 bg-emerald-500 text-white px-6 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-bl-2xl">
+              <div className="absolute top-0 right-0 bg-emerald-500 text-slate-950 px-4 py-1 text-[10px] font-extrabold uppercase tracking-wider rounded-bl-xl">
                 Recommended
               </div>
             )}
 
-            <div className="mb-8">
-              <h3 className="text-sm font-bold uppercase tracking-widest opacity-60 mb-2">{plan.name}</h3>
-              <div className="flex items-baseline gap-1">
-                <span className="text-5xl font-black">₹{plan.prices[interval].toLocaleString()}</span>
-                <span className="opacity-60 text-sm font-medium">/{interval === 'monthly' ? 'mo' : interval === 'halfyearly' ? '6mo' : 'yr'}</span>
-              </div>
-              <p className="mt-4 text-sm opacity-80 leading-relaxed font-medium">{plan.description}</p>
-            </div>
-
-            <div className="space-y-4 mb-10 flex-grow">
-              {plan.features.map((feature, i) => (
-                <div key={i} className="flex items-center gap-3 text-sm font-medium">
-                  <CheckCircle2 size={18} className={plan.recommended ? 'text-emerald-400' : 'text-emerald-500'} />
-                  <span className="opacity-90">{feature}</span>
+            <div>
+              <div className="mb-6">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">{plan.name}</h3>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-4xl font-black tracking-tight">₹{plan.prices[interval].toLocaleString()}</span>
+                  <span className="text-xs font-medium text-slate-400">/{interval === 'monthly' ? 'mo' : interval === 'halfyearly' ? '6mo' : 'yr'}</span>
                 </div>
-              ))}
+                <p className="mt-3 text-xs opacity-80 leading-relaxed font-medium">{plan.description}</p>
+              </div>
+
+              <div className="space-y-3 mb-8">
+                {plan.features.map((feature, i) => (
+                  <div key={i} className="flex items-center gap-2.5 text-xs font-medium">
+                    <CheckCircle2 size={16} className={plan.recommended ? 'text-emerald-400' : 'text-emerald-600'} />
+                    <span className="opacity-90">{feature}</span>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <button 
               onClick={() => handleRazorpaySubscribe(plan.id)}
               disabled={loading !== null}
-              className={`w-full py-4 rounded-2xl font-bold flex items-center justify-center gap-3 transition-all active:scale-[0.98] ${plan.buttonColor}`}
+              className={`w-full py-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all active:scale-[0.98] ${
+                plan.id === 'enterprise' 
+                  ? 'bg-emerald-400 text-slate-950 hover:bg-emerald-300 shadow-xs' 
+                  : 'bg-indigo-900 text-white hover:bg-indigo-950 shadow-xs'
+              }`}
             >
               {loading === plan.id ? (
-                <Loader2 className="animate-spin" size={20} />
+                <Loader2 className="animate-spin" size={16} />
               ) : (
                 <>
-                  <Zap size={20} />
-                  Subscribe with Razorpay
+                  <Zap size={15} />
+                  <span>Subscribe with Razorpay</span>
                 </>
               )}
             </button>
