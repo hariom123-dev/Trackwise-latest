@@ -128,18 +128,6 @@ export default function Landing() {
           className="mt-16 relative max-w-5xl mx-auto"
         >
           <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xl overflow-hidden">
-            {/* Mock Window Controls */}
-            <div className="bg-slate-100/80 border-b border-slate-200/60 px-4 py-3 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-slate-300" />
-                <div className="w-3 h-3 rounded-full bg-slate-300" />
-                <div className="w-3 h-3 rounded-full bg-slate-300" />
-              </div>
-              <div className="px-3 py-1 bg-white border border-slate-200 rounded-md text-[10px] font-semibold text-slate-500 shadow-2xs">
-              </div>
-              <div className="w-12" />
-            </div>
-
             <div className="p-2 sm:p-4 bg-slate-50">
               <img 
                 src={IMAGES.HERO_DASHBOARD} 
@@ -164,17 +152,17 @@ export default function Landing() {
       </section>
 
       {/* Trust Badges Bar */}
-      <section className="py-12 bg-white border-y border-slate-200/60">
+      <section className="py-12 bg-slate-50/80 border-y border-slate-200/80">
         <div className="max-w-6xl mx-auto px-4 text-center">
-          <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-8">
+          <p className="text-xs font-bold text-slate-600 uppercase tracking-wider mb-8">
             Trusted by 1,500+ High-Growth Finance & Strategy Teams
           </p>
-          <div className="flex flex-wrap justify-center items-center gap-10 sm:gap-16 opacity-60 font-black text-slate-400 tracking-wider text-xl">
-            <span>VOLTA</span>
-            <span>KINETIC</span>
-            <span>AETHER</span>
-            <span>NEXUS</span>
-            <span>ORBIT</span>
+          <div className="flex flex-wrap justify-center items-center gap-10 sm:gap-16 font-extrabold text-slate-700 tracking-wider text-xl">
+            <span className="hover:text-slate-900 transition-colors">VOLTA</span>
+            <span className="hover:text-slate-900 transition-colors">KINETIC</span>
+            <span className="hover:text-slate-900 transition-colors">AETHER</span>
+            <span className="hover:text-slate-900 transition-colors">NEXUS</span>
+            <span className="hover:text-slate-900 transition-colors">ORBIT</span>
           </div>
         </div>
       </section>
