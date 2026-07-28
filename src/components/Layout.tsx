@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, 
@@ -20,7 +20,7 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { IMAGES } from '../constants';
+import { getStoredProfile, UserProfile } from '../utils/profileStorage';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -31,6 +31,15 @@ export default function Layout({ children }: LayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isGridOpen, setIsGridOpen] = useState(false);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
+  const [userProfile, setUserProfile] = useState<UserProfile>(getStoredProfile);
+
+  useEffect(() => {
+    const handleProfileUpdate = () => {
+      setUserProfile(getStoredProfile());
+    };
+    window.addEventListener('profile-updated', handleProfileUpdate);
+    return () => window.removeEventListener('profile-updated', handleProfileUpdate);
+  }, []);
 
   const navItems = [
     { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
@@ -137,18 +146,21 @@ export default function Layout({ children }: LayoutProps) {
         </div>
 
         {/* User Profile Footer */}
-        <div className="pt-4 px-2 flex items-center gap-3 border-t border-slate-100">
+        <Link 
+          to="/settings"
+          className="pt-4 px-2 flex items-center gap-3 border-t border-slate-100 hover:bg-slate-50 transition-colors rounded-xl"
+        >
           <img 
-            src={location.pathname === '/insights' ? IMAGES.INSIGHTS_PROFILE : IMAGES.USER_PROFILE} 
-            alt="Profile" 
-            className="w-9 h-9 rounded-full object-cover ring-2 ring-slate-100"
+            src={userProfile.avatar} 
+            alt={userProfile.name} 
+            className="w-9 h-9 rounded-full object-cover ring-2 ring-slate-100 shadow-xs"
             referrerPolicy="no-referrer"
           />
           <div className="overflow-hidden flex-1">
-            <p className="text-xs font-bold text-slate-900 truncate">Alex Sterling</p>
-            <p className="text-[10px] text-slate-400 font-medium truncate">Lead Strategist</p>
+            <p className="text-xs font-bold text-slate-900 truncate">{userProfile.name}</p>
+            <p className="text-[10px] text-slate-400 font-medium truncate">{userProfile.role}</p>
           </div>
-        </div>
+        </Link>
       </aside>
 
       {/* Main Layout Area */}
@@ -285,14 +297,17 @@ export default function Layout({ children }: LayoutProps) {
             <Link 
               to="/settings" 
               className="flex items-center gap-2 hover:bg-slate-100 p-1.5 rounded-xl transition-colors"
+              title="Profile Settings"
             >
               <img 
-                src={IMAGES.USER_PROFILE} 
-                alt="Avatar" 
+                src={userProfile.avatar} 
+                alt={userProfile.name} 
                 className="w-7 h-7 rounded-full object-cover ring-1 ring-slate-200"
                 referrerPolicy="no-referrer"
               />
-              <span className="hidden md:inline-block text-xs font-bold text-slate-800">Alex</span>
+              <span className="hidden md:inline-block text-xs font-bold text-slate-800">
+                {userProfile.name.split(' ')[0] || 'User'}
+              </span>
             </Link>
           </div>
         </header>

@@ -1,21 +1,53 @@
-import React, { useState } from 'react';
-import { User, Lock, Bell, Globe, Shield, Key, Save, Trash2, Camera, Mail, Phone, CreditCard, Copy, Check, Eye, EyeOff, X, Loader2 } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { User, Lock, Bell, Globe, Shield, Key, Save, Trash2, Camera, Mail, Phone, CreditCard, Copy, Check, Eye, EyeOff, X, Loader2, Briefcase, Upload } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'motion/react';
+import { getStoredProfile, saveStoredProfile, UserProfile, DEFAULT_PROFILE } from '../utils/profileStorage';
 
 export default function Settings() {
   const [activeTab, setActiveTab] = useState('profile');
   const [loading, setLoading] = useState(false);
   const [apiKeyVisible, setApiKeyVisible] = useState(false);
   const [apiKeyCopied, setApiKeyCopied] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   // Profile State
-  const [profileData, setProfileData] = useState({
-    name: 'Alex Sterling',
-    email: 'alex@kinetic.com',
-    phone: '+1 (555) 000-0000',
-    timezone: 'Pacific Time (PT)'
-  });
+  const [profileData, setProfileData] = useState<UserProfile>(getStoredProfile);
+
+  useEffect(() => {
+    const handleProfileUpdateEvent = () => {
+      setProfileData(getStoredProfile());
+    };
+    window.addEventListener('profile-updated', handleProfileUpdateEvent);
+    return () => window.removeEventListener('profile-updated', handleProfileUpdateEvent);
+  }, []);
+
+  const handleFileClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        toast.error('Please select a valid image file');
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error('Image size must be smaller than 5MB');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const result = event.target?.result as string;
+        if (result) {
+          setProfileData(prev => ({ ...prev, avatar: result }));
+          toast.success('New profile picture selected. Click "Save Changes" to save.');
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   // Notifications State
   const [notifications, setNotifications] = useState({
@@ -38,11 +70,21 @@ export default function Settings() {
 
   const handleProfileUpdate = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!profileData.name.trim()) {
+      toast.error('Name cannot be empty');
+      return;
+    }
+    if (!profileData.email.trim()) {
+      toast.error('Email cannot be empty');
+      return;
+    }
+
     setLoading(true);
     setTimeout(() => {
+      saveStoredProfile(profileData);
       setLoading(false);
-      toast.success('Profile updated successfully');
-    }, 1500);
+      toast.success('Profile saved successfully!');
+    }, 800);
   };
 
   const toggleNotification = (key: keyof typeof notifications) => {
@@ -113,30 +155,51 @@ export default function Settings() {
               animate={{ opacity: 1, x: 0 }}
               className="space-y-8"
             >
+              {/* Hidden file input for local photo selection */}
+              <input 
+                type="file"
+                ref={fileInputRef}
+                onChange={handleImageChange}
+                accept="image/*"
+                className="hidden"
+              />
+
               <div className="flex items-center gap-6">
-                <div className="relative group">
+                <div className="relative group cursor-pointer" onClick={handleFileClick}>
                   <img 
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
-                    alt="Profile" 
-                    className="w-24 h-24 rounded-3xl object-cover ring-4 ring-slate-50 transition-transform group-hover:scale-105"
+                    src={profileData.avatar} 
+                    alt="Profile Avatar" 
+                    className="w-24 h-24 rounded-3xl object-cover ring-4 ring-slate-100 shadow-md transition-transform group-hover:scale-105"
                     referrerPolicy="no-referrer"
                   />
-                  <button 
-                    onClick={() => toast.success('Profile photo upload triggered')}
-                    className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity text-white"
-                  >
-                    <Camera size={24} />
-                  </button>
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity text-white font-medium text-xs gap-1">
+                    <Camera size={20} />
+                  </div>
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-indigo-900">{profileData.name}</h3>
-                  <p className="text-sm text-slate-500 font-medium">Lead Strategist at Kinetic Global</p>
-                  <button 
-                    onClick={() => toast.success('Profile photo upload triggered')}
-                    className="mt-2 text-xs font-bold text-indigo-700 hover:underline"
-                  >
-                    Change Photo
-                  </button>
+                  <h3 className="text-xl font-bold text-indigo-900">{profileData.name || 'User Profile'}</h3>
+                  <p className="text-sm text-slate-500 font-medium">{profileData.role || 'Member'}</p>
+                  <div className="flex items-center gap-3 mt-2">
+                    <button 
+                      type="button"
+                      onClick={handleFileClick}
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-700 hover:text-indigo-900 hover:underline"
+                    >
+                      <Upload size={14} /> Upload New Photo
+                    </button>
+                    {profileData.avatar !== DEFAULT_PROFILE.avatar && (
+                      <button 
+                        type="button"
+                        onClick={() => {
+                          setProfileData(prev => ({ ...prev, avatar: DEFAULT_PROFILE.avatar }));
+                          toast.info('Profile picture reset to default');
+                        }}
+                        className="text-xs font-bold text-slate-400 hover:text-rose-600 transition-colors"
+                      >
+                        Reset Image
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -148,7 +211,8 @@ export default function Settings() {
                       type="text" 
                       value={profileData.name} 
                       onChange={(e) => setProfileData({...profileData, name: e.target.value})}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 ring-indigo-500/20 outline-none transition-all" 
+                      placeholder="e.g. Alex Sterling"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 ring-indigo-500/20 outline-none transition-all font-medium text-slate-800" 
                     />
                   </div>
                   <div className="space-y-2">
@@ -159,7 +223,8 @@ export default function Settings() {
                         type="email" 
                         value={profileData.email} 
                         onChange={(e) => setProfileData({...profileData, email: e.target.value})}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-11 pr-4 py-3 text-sm focus:ring-2 ring-indigo-500/20 outline-none transition-all" 
+                        placeholder="e.g. alex@kinetic.com"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-11 pr-4 py-3 text-sm focus:ring-2 ring-indigo-500/20 outline-none transition-all font-medium text-slate-800" 
                       />
                     </div>
                   </div>
@@ -171,20 +236,38 @@ export default function Settings() {
                         type="tel" 
                         value={profileData.phone} 
                         onChange={(e) => setProfileData({...profileData, phone: e.target.value})}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-11 pr-4 py-3 text-sm focus:ring-2 ring-indigo-500/20 outline-none transition-all" 
+                        placeholder="e.g. +1 (555) 000-0000"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-11 pr-4 py-3 text-sm focus:ring-2 ring-indigo-500/20 outline-none transition-all font-medium text-slate-800" 
                       />
                     </div>
                   </div>
                   <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Profession / Title</label>
+                    <div className="relative">
+                      <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                      <input 
+                        type="text" 
+                        value={profileData.role} 
+                        onChange={(e) => setProfileData({...profileData, role: e.target.value})}
+                        placeholder="e.g. Lead Strategist at Kinetic Global"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-11 pr-4 py-3 text-sm focus:ring-2 ring-indigo-500/20 outline-none transition-all font-medium text-slate-800" 
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2 md:col-span-2">
                     <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Timezone</label>
                     <select 
                       value={profileData.timezone}
                       onChange={(e) => setProfileData({...profileData, timezone: e.target.value})}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 ring-indigo-500/20 outline-none transition-all"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 ring-indigo-500/20 outline-none transition-all font-medium text-slate-800"
                     >
                       <option>Pacific Time (PT)</option>
                       <option>Eastern Time (ET)</option>
+                      <option>Central Time (CT)</option>
+                      <option>Mountain Time (MT)</option>
                       <option>Greenwich Mean Time (GMT)</option>
+                      <option>Central European Time (CET)</option>
+                      <option>India Standard Time (IST)</option>
                     </select>
                   </div>
                 </div>
@@ -193,12 +276,7 @@ export default function Settings() {
                   <button 
                     type="button"
                     onClick={() => {
-                      setProfileData({
-                        name: 'Alex Sterling',
-                        email: 'alex@kinetic.com',
-                        phone: '+1 (555) 000-0000',
-                        timezone: 'Pacific Time (PT)'
-                      });
+                      setProfileData(getStoredProfile());
                       toast.info('Changes discarded');
                     }}
                     className="px-6 py-3 text-sm font-bold text-slate-500 hover:bg-slate-100 rounded-xl transition-all"
