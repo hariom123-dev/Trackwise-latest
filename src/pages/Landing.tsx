@@ -165,10 +165,17 @@ export default function Landing() {
             <div className="md:w-1/2 relative">
               <img 
                 src={IMAGES.FEATURE_ML} 
-                alt="ML Intelligence" 
+                alt="ML Financial Forecasting Graph & Analytics" 
                 className="w-full h-64 object-cover rounded-lg shadow-2xl rotate-2 group-hover:rotate-0 transition-transform duration-700"
                 referrerPolicy="no-referrer"
               />
+              <div className="absolute bottom-3 right-3 bg-slate-900/90 backdrop-blur-md px-4 py-2.5 rounded-lg border border-white/10 shadow-xl flex items-center gap-3">
+                <div className="w-2.5 h-2.5 rounded-full bg-[#6ffbbe] animate-pulse" />
+                <div>
+                  <p className="text-[10px] font-bold text-[#979ddd] uppercase tracking-wider">Predictive Revenue Graph</p>
+                  <p className="text-sm font-extrabold text-[#6ffbbe]">$1.4M Projected Growth</p>
+                </div>
+              </div>
             </div>
           </div>
 
