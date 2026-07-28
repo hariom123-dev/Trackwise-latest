@@ -16,13 +16,18 @@ import {
   TrendingUp,
   Layers,
   Lock,
-  ChevronRight
+  ChevronRight,
+  Scale,
+  ArrowRightLeft,
+  Receipt,
+  DollarSign
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { IMAGES } from '../constants';
 
 export default function Landing() {
   const [isAnnual, setIsAnnual] = useState(true);
+  const [accountingMode, setAccountingMode] = useState<'accrual' | 'cash' | 'variance'>('accrual');
 
   return (
     <div className="bg-[#f8fafc] font-sans text-slate-900 antialiased selection:bg-indigo-500/10 selection:text-indigo-900">
@@ -120,32 +125,185 @@ export default function Landing() {
           </motion.div>
         </div>
 
-        {/* Dashboard Frame Preview */}
+        {/* Accrual vs Cash Accounting Intelligence Preview */}
         <motion.div 
           initial={{ opacity: 0, y: 32 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.6 }}
-          className="mt-16 relative max-w-5xl mx-auto"
+          className="mt-14 relative max-w-5xl mx-auto"
         >
-          <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xl overflow-hidden">
-            <div className="p-2 sm:p-4 bg-slate-50">
-              <img 
-                src={IMAGES.HERO_DASHBOARD} 
-                alt="TrackWise Dashboard Preview" 
-                className="w-full rounded-xl border border-slate-200/70 shadow-xs"
-                referrerPolicy="no-referrer"
-              />
+          <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xl overflow-hidden">
+            {/* Interactive Accounting Toolbar */}
+            <div className="bg-slate-900 border-b border-slate-800 px-4 py-3.5 flex flex-col sm:flex-row items-center justify-between gap-3 text-white">
+              <div className="flex items-center gap-2.5">
+                <div className="p-1.5 rounded-lg bg-indigo-500/20 text-indigo-400">
+                  <Scale size={16} />
+                </div>
+                <div className="text-left">
+                  <span className="text-xs font-bold block leading-none text-slate-100">Accrual vs Cash Accounting Engine</span>
+                  <span className="text-[10px] text-slate-400 font-medium">Real-time GAAP revenue recognition & cash flow timing analysis</span>
+                </div>
+              </div>
+
+              {/* Accounting View Mode Toggles */}
+              <div className="flex items-center bg-slate-800/90 p-1 rounded-xl border border-slate-700/80 text-xs font-bold w-full sm:w-auto justify-center">
+                <button
+                  onClick={() => setAccountingMode('accrual')}
+                  className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${
+                    accountingMode === 'accrual'
+                      ? 'bg-indigo-600 text-white shadow-2xs'
+                      : 'text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  <Receipt size={13} />
+                  <span>Accrual (GAAP)</span>
+                </button>
+                <button
+                  onClick={() => setAccountingMode('cash')}
+                  className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${
+                    accountingMode === 'cash'
+                      ? 'bg-indigo-600 text-white shadow-2xs'
+                      : 'text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  <DollarSign size={13} />
+                  <span>Cash Basis</span>
+                </button>
+                <button
+                  onClick={() => setAccountingMode('variance')}
+                  className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${
+                    accountingMode === 'variance'
+                      ? 'bg-indigo-600 text-white shadow-2xs'
+                      : 'text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  <ArrowRightLeft size={13} />
+                  <span>Variance Bridge</span>
+                </button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 bg-slate-50">
+              {/* Financial Ledger Photography Image */}
+              <div className="lg:col-span-7 p-3 sm:p-4 flex flex-col justify-between">
+                <div className="relative rounded-xl overflow-hidden border border-slate-200/80 shadow-2xs bg-white">
+                  <img 
+                    src={IMAGES.HERO_DASHBOARD} 
+                    alt="Accrual and Cash Accounting Analysis" 
+                    className="w-full h-[280px] sm:h-[340px] object-cover"
+                    referrerPolicy="no-referrer"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent flex flex-col justify-end p-4 text-white">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 bg-slate-900/80 border border-slate-800 px-2.5 py-1 rounded-md w-fit mb-1.5">
+                      Accounting Ledger Synchronization
+                    </span>
+                    <h3 className="text-sm sm:text-base font-extrabold text-white">
+                      Automated Accounts Receivable & Revenue Recognition
+                    </h3>
+                  </div>
+                </div>
+              </div>
+
+              {/* Dynamic Metrics Comparison Panel */}
+              <div className="lg:col-span-5 p-4 sm:p-6 bg-white border-t lg:border-t-0 lg:border-l border-slate-200/80 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                      {accountingMode === 'accrual' && 'Accrual Basis (Recognized)'}
+                      {accountingMode === 'cash' && 'Cash Basis (Actual Collected)'}
+                      {accountingMode === 'variance' && 'Accrual vs Cash Reconciliation'}
+                    </h4>
+                    <span className="text-[10px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full">
+                      Q3 Financial Period
+                    </span>
+                  </div>
+
+                  {accountingMode === 'accrual' && (
+                    <div className="space-y-3">
+                      <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Earned Revenue (GAAP)</p>
+                        <p className="text-2xl font-black text-slate-900 mt-0.5">$1,420,000</p>
+                        <p className="text-[11px] text-slate-500 font-medium mt-1">Recognized when services delivered, regardless of cash timing.</p>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="p-2.5 rounded-xl bg-emerald-50/60 border border-emerald-100">
+                          <p className="text-[10px] font-bold text-emerald-800 uppercase">Recognized Invoices</p>
+                          <p className="text-sm font-extrabold text-emerald-950 mt-0.5">$1.18M</p>
+                        </div>
+                        <div className="p-2.5 rounded-xl bg-indigo-50/60 border border-indigo-100">
+                          <p className="text-[10px] font-bold text-indigo-800 uppercase">Accounts Receivable</p>
+                          <p className="text-sm font-extrabold text-indigo-950 mt-0.5">$240,000</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {accountingMode === 'cash' && (
+                    <div className="space-y-3">
+                      <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Cash Received (Bank Receipts)</p>
+                        <p className="text-2xl font-black text-slate-900 mt-0.5">$1,180,000</p>
+                        <p className="text-[11px] text-slate-500 font-medium mt-1">Direct cash inflows collected during period.</p>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="p-2.5 rounded-xl bg-slate-100 border border-slate-200">
+                          <p className="text-[10px] font-bold text-slate-600 uppercase">Cash Expenses</p>
+                          <p className="text-sm font-extrabold text-slate-900 mt-0.5">$740,000</p>
+                        </div>
+                        <div className="p-2.5 rounded-xl bg-emerald-50/60 border border-emerald-100">
+                          <p className="text-[10px] font-bold text-emerald-800 uppercase">Net Cash Flow</p>
+                          <p className="text-sm font-extrabold text-emerald-950 mt-0.5">+$440,000</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {accountingMode === 'variance' && (
+                    <div className="space-y-3">
+                      <div className="p-3 rounded-xl bg-amber-50/70 border border-amber-200/80">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-amber-800">Timing Gap (Uncollected)</p>
+                        <p className="text-2xl font-black text-amber-950 mt-0.5">+$240,000</p>
+                        <p className="text-[11px] text-amber-800 font-medium mt-1">Accrual Revenue earned but awaiting customer cash settlement.</p>
+                      </div>
+                      <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-1.5">
+                        <div className="flex justify-between font-semibold text-slate-600">
+                          <span>Accrual Net Margin:</span>
+                          <span className="text-slate-900 font-bold">38.2%</span>
+                        </div>
+                        <div className="flex justify-between font-semibold text-slate-600">
+                          <span>Cash Net Margin:</span>
+                          <span className="text-slate-900 font-bold">37.2%</span>
+                        </div>
+                        <div className="flex justify-between font-semibold text-slate-600">
+                          <span>Deferred Revenue Balance:</span>
+                          <span className="text-indigo-700 font-bold">$95,000</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-slate-500">
+                  <span className="flex items-center gap-1.5">
+                    <CheckCircle2 size={13} className="text-emerald-600" />
+                    GAAP Compliance Engine
+                  </span>
+                  <Link to="/data" className="text-indigo-700 hover:underline flex items-center gap-1">
+                    Simulate Revenue <ChevronRight size={13} />
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
 
           {/* Floating Metric Callout */}
-          <div className="absolute -bottom-6 right-6 bg-white border border-slate-200 p-4 rounded-2xl shadow-xl hidden sm:flex items-center gap-4">
-            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-              <TrendingUp size={20} />
+          <div className="absolute -bottom-6 right-6 bg-white border border-slate-200 p-3.5 rounded-2xl shadow-xl hidden sm:flex items-center gap-3.5">
+            <div className="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center shrink-0 font-black">
+              <Scale size={18} />
             </div>
             <div className="text-left">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Revenue Forecast</p>
-              <p className="text-lg font-black text-slate-900">+24.8% YoY Projected</p>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Accounting Alignment</p>
+              <p className="text-sm font-black text-slate-900">Accrual vs Cash Reconciled</p>
             </div>
           </div>
         </motion.div>
