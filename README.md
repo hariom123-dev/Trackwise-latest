@@ -3,7 +3,7 @@ Smart Business Analytics is a full-stack web application designed to help busine
 
 🚀 Features 
 
-📥 Data Management
+📥 Data Management     
 Upload or manually enter daily sales and inventory data (CSV/Excel supported).
                
 📊 Interactive Visualizations
