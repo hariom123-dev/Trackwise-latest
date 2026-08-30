@@ -31,7 +31,7 @@ Subscription management
 📈 Business Intelligence Dashboard
 Clean, responsive UI for real-time insights and decision-making.
 
-🛠️ Tech Stack
+🛠️ Tech Stack     
 Frontend: React.js, Tailwind CSS
 Backend: Node.js / Django
 Database: MongoDB / PostgreSQL
